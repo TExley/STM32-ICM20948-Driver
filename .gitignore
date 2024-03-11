@@ -1,0 +1,6 @@
+*
+!.gitignore
+!icm20948.h
+!icm20948.c
+!README.md
+!*/
