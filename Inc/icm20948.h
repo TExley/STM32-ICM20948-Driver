@@ -172,13 +172,13 @@ static const uint32_t STARTUP_DELAY = 100;
  * GYR ~ 35ms
  * MAG ~ 8ms
  */
-static const uint32_t SLEEP_DELAY = 45;
+static const uint32_t WAKE_DELAY = 45;
 
 // Exact time between sensor read requests
 static const uint32_t READ_DELAY = 100;
 
 // Maximum time between sensor sleep and wake-up
-static const uint32_t MAXIMUM_SLEEP_DELAY = READ_DELAY - SLEEP_DELAY;
+static const uint32_t MAXIMUM_SLEEP_DELAY = READ_DELAY - WAKE_DELAY;
 
 // Maximum time-out to wait for any sensor ACK
 static const uint32_t MAXIMUM_ICM_TIMEOUT = 20;
