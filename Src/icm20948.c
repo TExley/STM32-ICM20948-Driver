@@ -155,4 +155,17 @@ HAL_StatusTypeDef ICM20948_ReadDualRegisters(const reg_R* regi_H, const reg_R* r
 	*data = (((uint16_t) data_H) << BITS_PER_BYTE) + data_L;
 	return HAL_OK;
 }
+
+HAL_StatusTypeDef ICM20948_Wake()
+{
+	HAL_StatusTypeDef status = ICM20948_WriteRegister(&REG_PWR_MGMT_1, REG_PWR_MGMT_1_VALUE_WAKE);
+	if (status == HAL_OK)
+		HAL_Delay(WAKE_DELAY);
+	return status;
+}
+
+HAL_StatusTypeDef ICM20948_Sleep()
+{
+	return ICM20948_WriteRegister(&REG_PWR_MGMT_1, REG_PWR_MGMT_1_VALUE_SLEEP);
+}
 /* ICM20948 FUNCTIONS END*/
