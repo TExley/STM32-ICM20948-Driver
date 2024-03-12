@@ -99,8 +99,13 @@ HAL_StatusTypeDef ICM20948_ReadUserBank(uint8_t* data)
 
 HAL_StatusTypeDef ICM20948_ChangeUserBank(user_bank ubank)
 {
-	uint8_t i_ubank = ubank;
-	HAL_StatusTypeDef status = HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, REG_UBANK_SEL.address, I2C_MEMADD_SIZE_8BIT, &i_ubank, 1, MAXIMUM_ICM_TIMEOUT);
+	uint8_t data;
+	HAL_StatusTypeDef status = ICM20948_ReadUserBank(&data);
+	if (status != HAL_OK)
+		return status;
+
+	uint8_t i_ubank = ((uint8_t) ubank) + (data & REG_UBANK_SEL_RESERVED_MASK);
+	status = HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, REG_UBANK_SEL.address, I2C_MEMADD_SIZE_8BIT, &i_ubank, 1, MAXIMUM_ICM_TIMEOUT);
 	if (status == HAL_OK)
 		current_ubank = ubank;
 	return status;
