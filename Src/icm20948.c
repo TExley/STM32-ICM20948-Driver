@@ -143,7 +143,7 @@ HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
 	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
 }
 
-HAL_StatusTypeDef ICM20948_ReadDualRegisters(const reg_R* regi_H, const reg_R* regi_L, uint16_t* data)
+HAL_StatusTypeDef ICM20948_ReadSensorRegisters(const reg_R* regi_H, const reg_R* regi_L, int16_t* data)
 {
 	uint8_t data_H, data_L;
 	HAL_StatusTypeDef status = ICM20948_ReadRegister(regi_H, &data_H);
@@ -152,7 +152,7 @@ HAL_StatusTypeDef ICM20948_ReadDualRegisters(const reg_R* regi_H, const reg_R* r
 	status = ICM20948_ReadRegister(regi_L, &data_L);
 	if (status != HAL_OK)
 		return status;
-	*data = (((uint16_t) data_H) << BITS_PER_BYTE) + data_L;
+	*data = (((int16_t) data_H) << BITS_PER_BYTE) + data_L;
 	return HAL_OK;
 }
 

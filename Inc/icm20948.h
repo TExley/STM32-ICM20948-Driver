@@ -201,7 +201,7 @@ HAL_StatusTypeDef ICM20948_ChangeUserBank(user_bank ubank);
 HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data);
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data);
 
-HAL_StatusTypeDef ICM20948_ReadDualRegisters(const reg_R* regi_H, const reg_R* regi_L, uint16_t* data);
+HAL_StatusTypeDef ICM20948_ReadSensorRegisters(const reg_R* regi_H, const reg_R* regi_L, int16_t* data);
 
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
