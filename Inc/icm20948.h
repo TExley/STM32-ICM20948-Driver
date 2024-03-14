@@ -109,7 +109,7 @@ static const reg_R REG_TEMP_OUT_L = { "TEMP_OUT_L", 0x34, UBANK_0 };
  * 7:0 	| GYRO_SMPLRT_DIV	| sample rate dividor 1.1kHz/(1 + GYRO_SMPLRT_DIV)
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0b11111111, 0b00000000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:6 	| -				| reserved
@@ -118,7 +118,7 @@ static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0b
  * 0	| GYRO_FCHOICE	| 1 enable DLPF
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b00000000, 0b11000000 };
+static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b00000001, 0b11000000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:6 	| -				| reserved
@@ -128,7 +128,14 @@ static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b0000
  * 2:0	| GYRO_AVGCFG	| average lp-mode filter config (DS p60)
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b00000000, 0b11000000 };
+static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b00000101, 0b11000000 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:1 	| -				| reserved
+ * 0	| ODR_ALIGN_EN	| sensor start time alignment if and smprt set
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_ODR_ALIGN_EN = { "ODR_ALIGN_EN", 0x09, UBANK_2, 0b00000001, 0b11111110 };
 
 /* BIT 	| NAME 				| DESC
  * 7:4 	| -					| reserved
@@ -141,7 +148,7 @@ static const reg_RW REG_ACCEL_SMPLRT_DIV_1 = { "ACCEL_SMPLRT_DIV_1", 0x10, UBANK
  * 7:0 	| ACCEL_SMPLRT_DIV	| LSB for sample rate dividor 1.125kHz/(1 + ACCEL_SMPLRT_DIV[11:0])
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK_2, 0b11111111, 0b00000000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:6 	| -				| reserved

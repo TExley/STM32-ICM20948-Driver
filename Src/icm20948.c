@@ -66,6 +66,10 @@ HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* h_i2c, SDO_Pinouts  SDO_pinou
 	if (status != HAL_OK)
 		return status;
 
+	status = ICM20948_WriteRegister(&REG_ODR_ALIGN_EN, REG_ODR_ALIGN_EN.init_value);
+	if (status != HAL_OK)
+		return status;
+
 	status = ICM20948_WriteRegister(&REG_ACCEL_SMPLRT_DIV_1, REG_ACCEL_SMPLRT_DIV_1.init_value);
 	if (status != HAL_OK)
 		return status;
@@ -85,6 +89,8 @@ HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* h_i2c, SDO_Pinouts  SDO_pinou
 	status = ICM20948_WriteRegister(&REG_TEMP_CONFIG, REG_TEMP_CONFIG.init_value);
 	if (status != HAL_OK)
 		return status;
+
+	ICM20948_Sleep();
 
 	return HAL_OK;
 }
