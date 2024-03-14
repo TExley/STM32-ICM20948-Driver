@@ -117,11 +117,16 @@ HAL_StatusTypeDef ICM20948_CheckUserRegister(const reg_R* regi)
 
 HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data)
 {
+	return ICM20948_ReadRegisters(regi, data, 1);
+}
+
+HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint16_t size)
+{
 	HAL_StatusTypeDef status = ICM20948_CheckUserRegister(regi);
 	if (status != HAL_OK)
 		return status;
 
-	return HAL_I2C_Mem_Read(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, data, 1, MAXIMUM_ICM_TIMEOUT);
+	return HAL_I2C_Mem_Read(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, data, size, MAXIMUM_ICM_TIMEOUT);
 }
 
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
