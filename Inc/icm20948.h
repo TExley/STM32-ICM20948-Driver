@@ -10,8 +10,9 @@
 #include "stm32l4xx_hal.h"
 
 
-/* ICM20948 CONSTANTS START*/
+#define BITS_PER_BYTE 8
 
+/* ICM20948 CONSTANTS START */
 
 /* ICM20948 SLAVE ADDRESSES START */
 static const uint16_t ICM20948_ADDR_L = 0xD0; // SDO(AD0) pin is low
@@ -19,15 +20,15 @@ static const uint16_t ICM20948_ADDR_H = 0xD2; // SDO(AD0) pin is high
 /* ICM20948 SLAVE ADDRESSES END */
 
 
-/* ICM20948 REGISTER DEFINITION START*/
+/* ICM20948 REGISTER DEFINITION START */
 typedef struct reg {
 	const char* name;
 	const uint16_t address;
 } reg;
-/* ICM20948 REGISTER DEFINITION END*/
+/* ICM20948 REGISTER DEFINITION END */
 
 
-/* ICM20948 USER UBANK SELECT REGISTER START*/
+/* ICM20948 USER UBANK SELECT REGISTER START */
 /* BIT 	| NAME 		| DESC
  * 7:6 	| -			| reserved
  * 5:4	| USER_BANK	| value of user bank
@@ -37,10 +38,10 @@ typedef struct reg {
 static const reg REG_UBANK_SEL = { "UBANK_SEL", 0x7F}; // A RW register but cannot be used in reg_RW or reg_R functions
 static const uint8_t REG_UBANK_SEL_RESERVED_MASK = 0b11001111;
 typedef enum user_bank {UBANK_0 = 0x0, UBANK_1 = 0x10, UBANK_2 = 0x20, UBANK_3 = 0x30} user_bank;
-/* ICM20948 USER UBANK SELECT REGISTER END*/
+/* ICM20948 USER UBANK SELECT REGISTER END */
 
 
-/* ICM20948 REGISTER DEFINITION CONTINUED START*/
+/* ICM20948 REGISTER DEFINITION CONTINUED START */
 typedef struct reg_R {
 	const char* name;
 	const uint16_t address;
@@ -54,10 +55,10 @@ typedef struct reg_RW {
 	const uint8_t init_value;
 	const uint8_t reserved_mask;
 } reg_RW;
-/* ICM20948 REGISTER DEFINITION CONTINUED END*/
+/* ICM20948 REGISTER DEFINITION CONTINUED END */
 
 
-/* ICM20948 USER UBANK 0 REGISTERS START*/
+/* ICM20948 USER UBANK 0 REGISTERS START */
 static const reg_R REG_WHO_AM_I = { "WHO_AM_I", 0x00, UBANK_0 };
 static const uint8_t REG_WHO_AM_I_VALUE = 0xEA; // Read Only Value
 
@@ -101,10 +102,10 @@ static const reg_R REG_GYRO_ZOUT_L = { "GYRO_ZOUT_L", 0x38, UBANK_0 };
 
 static const reg_R REG_TEMP_OUT_H = { "TEMP_OUT_H", 0x33, UBANK_0 };
 static const reg_R REG_TEMP_OUT_L = { "TEMP_OUT_L", 0x34, UBANK_0 };
-/* ICM20948 USER UBANK 0 REGISTERS END*/
+/* ICM20948 USER UBANK 0 REGISTERS END */
 
 
-/* ICM20948 USER UBANK 2 REGISTERS START*/
+/* ICM20948 USER UBANK 2 REGISTERS START */
 /* BIT 	| NAME 				| DESC
  * 7:0 	| GYRO_SMPLRT_DIV	| sample rate dividor 1.1kHz/(1 + GYRO_SMPLRT_DIV)
  * Reset Value: 0b00000000
@@ -175,10 +176,43 @@ static const reg_RW REG_ACCEL_CONFIG_2 = { "ACCEL_CONFIG_2", 0x15, UBANK_2, 0b00
  * Reset Value: 0b00000000
  */
 static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0b00000000, 0b00000000 };
-/* ICM20948 USER UBANK 2 REGISTERS END*/
+/* ICM20948 USER UBANK 2 REGISTERS END */
 
 
-/* DELAYS AND TIMEOUTS START*/
+/* REGISTER SUPPORT CONSTS START */
+// ODR computation formula in Hz (DS p59)
+static const float GYRO_UPDATE_FREQUENCY = 1100 / (1 + REG_GYRO_SMPLRT_DIV.init_value);
+static const float GYRO_UPDATE_PERIOD = 1 / GYRO_UPDATE_FREQUENCY;
+
+// ODR computation formula in Hz (DS p63)
+static const float ACCEL_UPDATE_FREQUENCY =
+		1100 / (1 + (((uint16_t) REG_ACCEL_SMPLRT_DIV_1.init_value) << BITS_PER_BYTE) + REG_ACCEL_SMPLRT_DIV_2.init_value);
+static const float ACCEL_UPDATE_PERIOD = 1 / ACCEL_UPDATE_FREQUENCY;
+
+// 131 is typical value for FS_SEL = 0 (DS p11)
+static const float GYRO_SENSITIVITY_SCALE_FACTOR = 1.f / (131 >> ((REG_GYRO_CONFIG_1.init_value & 0b110) >> 1));
+
+// 16384 is typical value for FS_SEL = 0 (DS p11)
+static const float ACCEL_SENSITIVITY_SCALE_FACTOR = 1.f / (16384 >> ((REG_ACCEL_CONFIG_1.init_value & 0b110) >> 1));
+/* REGISTER SUPPORT CONSTS END */
+
+
+/* SENSOR SUPPORT STRUCTS START */
+typedef struct int16_vector3 {
+	int16_t x;
+	int16_t y;
+	int16_t z;
+} int16_vector3;
+
+typedef struct float_vector3 {
+	float x;
+	float y;
+	float z;
+} float_vector3;
+/* SENSOR SUPPORT STRUCTS END */
+
+
+/* DELAYS AND TIMEOUTS START */
 // Start-up time for register read/write from power-up
 static const uint32_t STARTUP_DELAY = 100;
 
@@ -197,16 +231,16 @@ static const uint32_t MAXIMUM_SLEEP_DELAY = READ_DELAY - WAKE_DELAY;
 
 // Maximum time-out to wait for any sensor ACK
 static const uint32_t MAXIMUM_ICM_TIMEOUT = 20;
-/* DELAYS AND TIMEOUTS END*/
-/* ICM20948 CONSTANTS END*/
+/* DELAYS AND TIMEOUTS END */
+/* ICM20948 CONSTANTS END */
 
 
-/* ICM20948 ENUMS START*/
+/* ICM20948 ENUMS START */
 typedef enum SDO_Pinouts {SDO_LOW, SDO_HIGH} SDO_Pinouts;
-/* ICM20948 ENUMS END*/
+/* ICM20948 ENUMS END */
 
 
-/* ICM20948 FUNCTIONS START*/
+/* ICM20948 FUNCTIONS START */
 HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* hi2c, SDO_Pinouts pinout);
 
 HAL_StatusTypeDef ICM20948_ReadUserBank(uint8_t* data);
@@ -216,8 +250,10 @@ HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data);
 HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint16_t size);
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data);
 
-HAL_StatusTypeDef ICM20948_ReadSensorRegisters(const reg_R* regi_H, const reg_R* regi_L, int16_t* data);
+HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro);
+
+float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_factor);
 
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
-/* ICM20948 FUNCTIONS END*/
+/* ICM20948 FUNCTIONS END */

@@ -7,15 +7,15 @@
 
 #include "icm20948.h"
 
-#define BITS_PER_BYTE 8
+#define NUMBER_SENSOR_REGISTERS 12 // 2 registers for each of 6dof
 
-/* ICM20948 VARIABLES START*/
+/* ICM20948 VARIABLES START */
 static uint16_t ICM20948_ADDR;
 static I2C_HandleTypeDef* hi2c;
 static user_bank current_ubank;
-/* ICM20948 VARIABLES END*/
+/* ICM20948 VARIABLES END */
 
-/* ICM20948 FUNCTIONS START*/
+/* ICM20948 FUNCTIONS START */
 HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* h_i2c, SDO_Pinouts  SDO_pinout)
 {
 	HAL_Delay(STARTUP_DELAY);
@@ -114,7 +114,8 @@ HAL_StatusTypeDef ICM20948_ChangeUserBank(user_bank ubank)
 	return status;
 }
 
-HAL_StatusTypeDef ICM20948_CheckUserRegister(const reg_R* regi)
+// Local function
+HAL_StatusTypeDef L_CheckUserRegister(const reg_R* regi)
 {
 	if (regi->bank != current_ubank)
 		return ICM20948_ChangeUserBank(regi->bank);
@@ -128,7 +129,7 @@ HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data)
 
 HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint16_t size)
 {
-	HAL_StatusTypeDef status = ICM20948_CheckUserRegister(regi);
+	HAL_StatusTypeDef status = L_CheckUserRegister(regi);
 	if (status != HAL_OK)
 		return status;
 
@@ -148,7 +149,7 @@ HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
 		data += data_read & regi->reserved_mask; // Copy the value of reserved bits into data
 	} else // ICM20948_ReadRegister already checks the userbank so we only do so if we don't read first
 	{
-		HAL_StatusTypeDef status = ICM20948_CheckUserRegister((reg_R*) regi);
+		HAL_StatusTypeDef status = L_CheckUserRegister((reg_R*) regi);
 		if (status != HAL_OK)
 			return status;
 	}
@@ -156,17 +157,35 @@ HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
 	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
 }
 
-HAL_StatusTypeDef ICM20948_ReadSensorRegisters(const reg_R* regi_H, const reg_R* regi_L, int16_t* data)
+// Local function
+int16_t L_CombineRegisters(uint8_t data_H, uint8_t data_L)
 {
-	uint8_t data_H, data_L;
-	HAL_StatusTypeDef status = ICM20948_ReadRegister(regi_H, &data_H);
+	return (((int16_t) data_H) << BITS_PER_BYTE) + data_L;
+}
+
+HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro)
+{
+	uint8_t data[NUMBER_SENSOR_REGISTERS];
+	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_ACCEL_XOUT_H, data, NUMBER_SENSOR_REGISTERS);
 	if (status != HAL_OK)
 		return status;
-	status = ICM20948_ReadRegister(regi_L, &data_L);
-	if (status != HAL_OK)
-		return status;
-	*data = (((int16_t) data_H) << BITS_PER_BYTE) + data_L;
+
+	accel->x = L_CombineRegisters(data[0], data[1]);
+	accel->y = L_CombineRegisters(data[2], data[3]);
+	accel->z = L_CombineRegisters(data[4], data[5]);
+	gyro->x = L_CombineRegisters(data[6], data[7]);
+	gyro->y = L_CombineRegisters(data[8], data[9]);
+	gyro->z = L_CombineRegisters(data[10], data[11]);
 	return HAL_OK;
+}
+
+float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_factor)
+{
+	float_vector3 ret;
+	ret.x = sensor_v->x * scale_factor;
+	ret.y = sensor_v->y * scale_factor;
+	ret.z = sensor_v->z * scale_factor;
+	return ret;
 }
 
 HAL_StatusTypeDef ICM20948_Wake()
@@ -181,4 +200,4 @@ HAL_StatusTypeDef ICM20948_Sleep()
 {
 	return ICM20948_WriteRegister(&REG_PWR_MGMT_1, REG_PWR_MGMT_1_VALUE_SLEEP);
 }
-/* ICM20948 FUNCTIONS END*/
+/* ICM20948 FUNCTIONS END */
