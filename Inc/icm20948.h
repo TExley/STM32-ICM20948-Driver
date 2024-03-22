@@ -105,6 +105,48 @@ static const reg_R REG_TEMP_OUT_L = { "TEMP_OUT_L", 0x34, UBANK_0 };
 /* ICM20948 USER UBANK 0 REGISTERS END */
 
 
+/* ICM20948 USER UBANK 1 REGISTERS START */
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| XA_OFFS[14:7]	| Upper bits of X accel offset cancellation
+ * Reset Value: Trimmed on a per-part basis for optimal performance
+ */
+static const reg_RW REG_XA_OFFS_H = { "XA_OFFS_H", 0x14, UBANK_1, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:1 	| XA_OFFS[6:0]	| Lower bits of X accel offset cancellation
+ * 0 	| -				| reserved
+ * Reset Value: Trimmed on a per-part basis for optimal performance
+ */
+static const reg_RW REG_XA_OFFS_L = { "XA_OFFS_L", 0x15, UBANK_1, 0b00000000, 0b00000001 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| YA_OFFS[14:7]	| Upper bits of Y accel offset cancellation
+ * Reset Value: Trimmed on a per-part basis for optimal performance
+ */
+static const reg_RW REG_YA_OFFS_H = { "YA_OFFS_H", 0x17, UBANK_1, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:1 	| YA_OFFS[6:0]	| Lower bits of Y accel offset cancellation
+ * 0 	| -				| reserved
+ * Reset Value: Trimmed on a per-part basis for optimal performance
+ */
+static const reg_RW REG_YA_OFFS_L = { "YA_OFFS_L", 0x18, UBANK_1, 0b00000000, 0b00000001 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| ZA_OFFS[14:7]	| Upper bits of Z accel offset cancellation
+ * Reset Value: Trimmed on a per-part basis for optimal performance
+ */
+static const reg_RW REG_ZA_OFFS_H = { "ZA_OFFS_H", 0x1A, UBANK_1, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:1 	| ZA_OFFS[6:0]	| Lower bits of Z accel offset cancellation
+ * 0 	| -				| reserved
+ * Reset Value: Trimmed on a per-part basis for optimal performance
+ */
+static const reg_RW REG_ZA_OFFS_L = { "ZA_OFFS_L", 0x1B, UBANK_1, 0b00000000, 0b00000001 };
+/* ICM20948 USER UBANK 1 REGISTERS END */
+
+
 /* ICM20948 USER UBANK 2 REGISTERS START */
 /* BIT 	| NAME 				| DESC
  * 7:0 	| GYRO_SMPLRT_DIV	| sample rate dividor 1.1kHz/(1 + GYRO_SMPLRT_DIV)
@@ -130,6 +172,42 @@ static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b0000
  * Reset Value: 0b00000000
  */
 static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b00000101, 0b11000000 };
+
+/* BIT 	| NAME 					| DESC
+ * 7:0 	| XG_OFFS_USER[15:8]	| Upper bits of X gyro offset cancellation
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_XG_OFFS_USRH = { "XG_OFFS_USRH", 0x03, UBANK_2, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 				| DESC
+ * 7:0 	| XG_OFFS_USER[7:0]	| Lower bits of X gyro offset cancellation
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_XG_OFFS_USRL = { "XG_OFFS_USRL", 0x04, UBANK_2, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 					| DESC
+ * 7:0 	| YG_OFFS_USER[15:8]	| Upper bits of Y gyro offset cancellation
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_YG_OFFS_USRH = { "YG_OFFS_USRH", 0x05, UBANK_2, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 				| DESC
+ * 7:0 	| YG_OFFS_USER[7:0]	| Lower bits of Y gyro offset cancellation
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_YG_OFFS_USRL = { "YG_OFFS_USRL", 0x06, UBANK_2, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 					| DESC
+ * 7:0 	| ZG_OFFS_USER[15:8]	| Upper bits of Z gyro offset cancellation
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_ZG_OFFS_USRH = { "ZG_OFFS_USRH", 0x07, UBANK_2, 0b00000000, 0b00000000 };
+
+/* BIT 	| NAME 				| DESC
+ * 7:0 	| ZG_OFFS_USER[7:0]	| Lower bits of Z gyro offset cancellation
+ * Reset Value: 0b00000000
+ */
+static const reg_RW REG_ZG_OFFS_USRL = { "ZG_OFFS_USRL", 0x08, UBANK_2, 0b00000000, 0b00000000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:1 	| -				| reserved
