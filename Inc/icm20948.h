@@ -260,12 +260,13 @@ static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0b00000000
 /* REGISTER SUPPORT CONSTS START */
 // ODR computation formula in Hz (DS p59)
 static const float GYRO_UPDATE_FREQUENCY = 1100 / (1 + REG_GYRO_SMPLRT_DIV.init_value);
-static const float GYRO_UPDATE_PERIOD = 1 / GYRO_UPDATE_FREQUENCY;
+static const uint32_t GYRO_UPDATE_PERIOD_MS = 1000 * (1 + (uint32_t) REG_GYRO_SMPLRT_DIV.init_value) / 1100;
 
 // ODR computation formula in Hz (DS p63)
 static const float ACCEL_UPDATE_FREQUENCY =
 		1100 / (1 + (((uint16_t) REG_ACCEL_SMPLRT_DIV_1.init_value) << BITS_PER_BYTE) + REG_ACCEL_SMPLRT_DIV_2.init_value);
-static const float ACCEL_UPDATE_PERIOD = 1 / ACCEL_UPDATE_FREQUENCY;
+static const uint32_t ACCEL_UPDATE_PERIOD_MS =
+		1000 * (1 + (((uint32_t) REG_ACCEL_SMPLRT_DIV_1.init_value) << BITS_PER_BYTE) + REG_ACCEL_SMPLRT_DIV_2.init_value) / 1100;
 
 // 131 is typical value for FS_SEL = 0 (DS p11)
 static const float GYRO_SENSITIVITY_SCALE_FACTOR = 1.f / (131 >> ((REG_GYRO_CONFIG_1.init_value & 0b110) >> 1));
