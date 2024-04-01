@@ -160,7 +160,7 @@ HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
 // Local function
 int16_t L_CombineRegisters(uint8_t data_H, uint8_t data_L)
 {
-	return (((int16_t) data_H) << BITS_PER_BYTE) + data_L;
+	return (((int16_t) data_H) << BITS_PER_BYTE) | data_L;
 }
 
 HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro)
