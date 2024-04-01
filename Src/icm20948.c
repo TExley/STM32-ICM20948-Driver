@@ -7,7 +7,8 @@
 
 #include "icm20948.h"
 
-#define NUMBER_SENSOR_REGISTERS 12 // 2 registers for each of 6dof
+#define NUMBER_ONBOARD_SENSOR_REGISTERS  12 // accel and gyro each have 2 registers for 3 dof
+#define NUMBER_ONBOARD_SENSOR_REGISTERS_HALF 6 // accel or gyro each have 2 registers for 3 dof
 
 /* ICM20948 VARIABLES START */
 static uint16_t ICM20948_ADDR;
@@ -165,8 +166,8 @@ int16_t L_CombineRegisters(uint8_t data_H, uint8_t data_L)
 
 HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro)
 {
-	uint8_t data[NUMBER_SENSOR_REGISTERS];
-	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_ACCEL_XOUT_H, data, NUMBER_SENSOR_REGISTERS);
+	uint8_t data[NUMBER_ONBOARD_SENSOR_REGISTERS];
+	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_ACCEL_XOUT_H, data, NUMBER_ONBOARD_SENSOR_REGISTERS);
 	if (status != HAL_OK)
 		return status;
 
@@ -176,6 +177,19 @@ HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vecto
 	gyro->x = L_CombineRegisters(data[6], data[7]);
 	gyro->y = L_CombineRegisters(data[8], data[9]);
 	gyro->z = L_CombineRegisters(data[10], data[11]);
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro)
+{
+	uint8_t data[NUMBER_ONBOARD_SENSOR_REGISTERS_HALF];
+	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_GYRO_XOUT_H, data, NUMBER_ONBOARD_SENSOR_REGISTERS_HALF);
+	if (status != HAL_OK)
+		return status;
+
+	gyro->x = L_CombineRegisters(data[0], data[1]);
+	gyro->y = L_CombineRegisters(data[2], data[3]);
+	gyro->z = L_CombineRegisters(data[4], data[5]);
 	return HAL_OK;
 }
 

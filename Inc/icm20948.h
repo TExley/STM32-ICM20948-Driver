@@ -331,7 +331,7 @@ HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint1
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data);
 
 HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro);
-
+HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro);
 float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_factor);
 
 HAL_StatusTypeDef ICM20948_Wake();
