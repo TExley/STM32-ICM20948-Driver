@@ -334,6 +334,10 @@ HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vecto
 HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro);
 float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_factor);
 
+HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset);
+
+HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro);
+
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
 /* ICM20948 FUNCTIONS END */

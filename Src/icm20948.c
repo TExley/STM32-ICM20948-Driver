@@ -202,6 +202,65 @@ float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_f
 	return ret;
 }
 
+HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset)
+{
+	HAL_StatusTypeDef status;
+	status = ICM20948_WriteRegister(&REG_XG_OFFS_USRH, (uint8_t) (gyro_offset->x >> BITS_PER_BYTE));
+	if (status != HAL_OK)
+		return status;
+
+	status = ICM20948_WriteRegister(&REG_XG_OFFS_USRL, (uint8_t) gyro_offset->x);
+	if (status != HAL_OK)
+		return status;
+
+	status = ICM20948_WriteRegister(&REG_YG_OFFS_USRH, (uint8_t) (gyro_offset->y >> BITS_PER_BYTE));
+	if (status != HAL_OK)
+		return status;
+
+	status = ICM20948_WriteRegister(&REG_YG_OFFS_USRL, (uint8_t) gyro_offset->y);
+	if (status != HAL_OK)
+		return status;
+
+	status = ICM20948_WriteRegister(&REG_ZG_OFFS_USRH, (uint8_t) (gyro_offset->z >> BITS_PER_BYTE));
+	if (status != HAL_OK)
+		return status;
+
+	status = ICM20948_WriteRegister(&REG_ZG_OFFS_USRL, (uint8_t) gyro_offset->z);
+	if (status != HAL_OK)
+			return status;
+
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro_offset)
+{
+	int64_t gyro_sum_x = 0,
+			gyro_sum_y = 0,
+			gyro_sum_z = 0;
+
+	for (uint32_t i = 0; i < ticks; i++)
+	{
+		uint32_t start_time = HAL_GetTick();
+
+		HAL_StatusTypeDef status = ICM20948_ReadGyroRegisters(gyro_offset);
+		if (status != HAL_OK)
+			return status;
+
+		gyro_sum_x += gyro_offset->x;
+		gyro_sum_y += gyro_offset->y;
+		gyro_sum_z += gyro_offset->z;
+
+		uint32_t end_time = HAL_GetTick();
+		HAL_Delay(GYRO_UPDATE_PERIOD_MS + start_time - end_time);
+	}
+
+	gyro_offset->x = (int16_t) (gyro_sum_x / ticks);
+	gyro_offset->y = (int16_t) (gyro_sum_y / ticks);
+	gyro_offset->z = (int16_t) (gyro_sum_z / ticks);
+
+	return HAL_OK;
+}
+
 HAL_StatusTypeDef ICM20948_Wake()
 {
 	HAL_StatusTypeDef status = ICM20948_WriteRegister(&REG_PWR_MGMT_1, REG_PWR_MGMT_1_VALUE_WAKE);
