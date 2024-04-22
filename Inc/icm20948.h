@@ -52,7 +52,6 @@ typedef struct reg_RW {
 	const char* name;
 	const uint16_t address;
 	const user_bank bank;
-	const uint8_t init_value;
 	const uint8_t reserved_mask;
 } reg_RW;
 /* ICM20948 REGISTER DEFINITION CONTINUED END */
@@ -70,7 +69,7 @@ static const uint8_t REG_WHO_AM_I_VALUE = 0xEA; // Read Only Value
  * 3:0	| -				| reserved
  * Reset Value: 0b01000000
  */
-static const reg_RW REG_LP_CONFIG = { "LP_CONFIG", 0x05, UBANK_0 };
+static const reg_RW REG_LP_CONFIG = { "LP_CONFIG", 0x05, UBANK_0, 0b10001111 };
 
 /* BIT 	| NAME 			| DESC
  * 7 	| DEVICE_RESET	| 1 resets all registers
@@ -81,7 +80,7 @@ static const reg_RW REG_LP_CONFIG = { "LP_CONFIG", 0x05, UBANK_0 };
  * 2:0	| CLKSEL		| 1-5 auto clock (DS p37)
  * Reset Value: 0b01000001
  */
-static const reg_RW REG_PWR_MGMT_1 = { "PWR_MGMT_1", 0x06, UBANK_0, 0b01000001, 0b00010000 };
+static const reg_RW REG_PWR_MGMT_1 = { "PWR_MGMT_1", 0x06, UBANK_0, 0b00010000 };
 static const uint8_t REG_PWR_MGMT_1_VALUE_RESET = 0b10000000;
 static const uint8_t REG_PWR_MGMT_1_VALUE_WAKE  = 0b00000000;
 static const uint8_t REG_PWR_MGMT_1_VALUE_SLEEP = 0b01000000;
@@ -110,40 +109,40 @@ static const reg_R REG_TEMP_OUT_L = { "TEMP_OUT_L", 0x34, UBANK_0 };
  * 7:0 	| XA_OFFS[14:7]	| Upper bits of X accel offset cancellation
  * Reset Value: Trimmed on a per-part basis for optimal performance
  */
-static const reg_RW REG_XA_OFFS_H = { "XA_OFFS_H", 0x14, UBANK_1, 0b00000000, 0b00000000 };
+static const reg_RW REG_XA_OFFS_H = { "XA_OFFS_H", 0x14, UBANK_1, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:1 	| XA_OFFS[6:0]	| Lower bits of X accel offset cancellation
  * 0 	| -				| reserved
  * Reset Value: Trimmed on a per-part basis for optimal performance
  */
-static const reg_RW REG_XA_OFFS_L = { "XA_OFFS_L", 0x15, UBANK_1, 0b00000000, 0b00000001 };
+static const reg_RW REG_XA_OFFS_L = { "XA_OFFS_L", 0x15, UBANK_1, 0b00000001 };
 
 /* BIT 	| NAME 			| DESC
  * 7:0 	| YA_OFFS[14:7]	| Upper bits of Y accel offset cancellation
  * Reset Value: Trimmed on a per-part basis for optimal performance
  */
-static const reg_RW REG_YA_OFFS_H = { "YA_OFFS_H", 0x17, UBANK_1, 0b00000000, 0b00000000 };
+static const reg_RW REG_YA_OFFS_H = { "YA_OFFS_H", 0x17, UBANK_1, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:1 	| YA_OFFS[6:0]	| Lower bits of Y accel offset cancellation
  * 0 	| -				| reserved
  * Reset Value: Trimmed on a per-part basis for optimal performance
  */
-static const reg_RW REG_YA_OFFS_L = { "YA_OFFS_L", 0x18, UBANK_1, 0b00000000, 0b00000001 };
+static const reg_RW REG_YA_OFFS_L = { "YA_OFFS_L", 0x18, UBANK_1, 0b00000001 };
 
 /* BIT 	| NAME 			| DESC
  * 7:0 	| ZA_OFFS[14:7]	| Upper bits of Z accel offset cancellation
  * Reset Value: Trimmed on a per-part basis for optimal performance
  */
-static const reg_RW REG_ZA_OFFS_H = { "ZA_OFFS_H", 0x1A, UBANK_1, 0b00000000, 0b00000000 };
+static const reg_RW REG_ZA_OFFS_H = { "ZA_OFFS_H", 0x1A, UBANK_1, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:1 	| ZA_OFFS[6:0]	| Lower bits of Z accel offset cancellation
  * 0 	| -				| reserved
  * Reset Value: Trimmed on a per-part basis for optimal performance
  */
-static const reg_RW REG_ZA_OFFS_L = { "ZA_OFFS_L", 0x1B, UBANK_1, 0b00000000, 0b00000001 };
+static const reg_RW REG_ZA_OFFS_L = { "ZA_OFFS_L", 0x1B, UBANK_1, 0b00000001 };
 /* ICM20948 USER UBANK 1 REGISTERS END */
 
 
@@ -152,7 +151,7 @@ static const reg_RW REG_ZA_OFFS_L = { "ZA_OFFS_L", 0x1B, UBANK_1, 0b00000000, 0b
  * 7:0 	| GYRO_SMPLRT_DIV	| sample rate dividor 1.1kHz/(1 + GYRO_SMPLRT_DIV)
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0b11111111, 0b00000000 };
+static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:6 	| -				| reserved
@@ -161,7 +160,7 @@ static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0b
  * 0	| GYRO_FCHOICE	| 1 enable DLPF
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b00000001, 0b11000000 };
+static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b11000000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:6 	| -				| reserved
@@ -171,63 +170,63 @@ static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b0000
  * 2:0	| GYRO_AVGCFG	| average lp-mode filter config (DS p60)
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b00000101, 0b11000000 };
+static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b11000000 };
 
 /* BIT 	| NAME 					| DESC
  * 7:0 	| XG_OFFS_USER[15:8]	| Upper bits of X gyro offset cancellation
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_XG_OFFS_USRH = { "XG_OFFS_USRH", 0x03, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_XG_OFFS_USRH = { "XG_OFFS_USRH", 0x03, UBANK_2, 0 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| XG_OFFS_USER[7:0]	| Lower bits of X gyro offset cancellation
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_XG_OFFS_USRL = { "XG_OFFS_USRL", 0x04, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_XG_OFFS_USRL = { "XG_OFFS_USRL", 0x04, UBANK_2, 0 };
 
 /* BIT 	| NAME 					| DESC
  * 7:0 	| YG_OFFS_USER[15:8]	| Upper bits of Y gyro offset cancellation
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_YG_OFFS_USRH = { "YG_OFFS_USRH", 0x05, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_YG_OFFS_USRH = { "YG_OFFS_USRH", 0x05, UBANK_2, 0 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| YG_OFFS_USER[7:0]	| Lower bits of Y gyro offset cancellation
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_YG_OFFS_USRL = { "YG_OFFS_USRL", 0x06, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_YG_OFFS_USRL = { "YG_OFFS_USRL", 0x06, UBANK_2, 0 };
 
 /* BIT 	| NAME 					| DESC
  * 7:0 	| ZG_OFFS_USER[15:8]	| Upper bits of Z gyro offset cancellation
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ZG_OFFS_USRH = { "ZG_OFFS_USRH", 0x07, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_ZG_OFFS_USRH = { "ZG_OFFS_USRH", 0x07, UBANK_2, 0 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| ZG_OFFS_USER[7:0]	| Lower bits of Z gyro offset cancellation
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ZG_OFFS_USRL = { "ZG_OFFS_USRL", 0x08, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_ZG_OFFS_USRL = { "ZG_OFFS_USRL", 0x08, UBANK_2, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:1 	| -				| reserved
  * 0	| ODR_ALIGN_EN	| sensor start time alignment if and smprt set
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ODR_ALIGN_EN = { "ODR_ALIGN_EN", 0x09, UBANK_2, 0b00000001, 0b11111110 };
+static const reg_RW REG_ODR_ALIGN_EN = { "ODR_ALIGN_EN", 0x09, UBANK_2, 0b11111110 };
 
 /* BIT 	| NAME 				| DESC
  * 7:4 	| -					| reserved
  * 3:0	| ACCEL_SMPLRT_DIV	| MSB for ACCEL_SMPLRT_DIV
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ACCEL_SMPLRT_DIV_1 = { "ACCEL_SMPLRT_DIV_1", 0x10, UBANK_2, 0b00000000, 0b11110000 };
+static const reg_RW REG_ACCEL_SMPLRT_DIV_1 = { "ACCEL_SMPLRT_DIV_1", 0x10, UBANK_2, 0b11110000 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| ACCEL_SMPLRT_DIV	| LSB for sample rate dividor 1.125kHz/(1 + ACCEL_SMPLRT_DIV[11:0])
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK_2, 0b11111111, 0b00000000 };
+static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK_2, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:6 	| -				| reserved
@@ -236,7 +235,7 @@ static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK
  * 0	| ACCEL_FCHOICE	| 1 enable DLPF
  * Reset Value: 0b00000001
  */
-static const reg_RW REG_ACCEL_CONFIG_1 = { "ACCEL_CONFIG_1", 0x14, UBANK_2, 0b00000011, 0b11000000 };
+static const reg_RW REG_ACCEL_CONFIG_1 = { "ACCEL_CONFIG_1", 0x14, UBANK_2, 0b11000000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:5 	| -				| reserved
@@ -246,18 +245,19 @@ static const reg_RW REG_ACCEL_CONFIG_1 = { "ACCEL_CONFIG_1", 0x14, UBANK_2, 0b00
  * 1:0	| DEC3_CFG		| controls samples averaged in devimator (DS p65)
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_ACCEL_CONFIG_2 = { "ACCEL_CONFIG_2", 0x15, UBANK_2, 0b00000001, 0b11100000 };
+static const reg_RW REG_ACCEL_CONFIG_2 = { "ACCEL_CONFIG_2", 0x15, UBANK_2, 0b11100000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:3 	| -				| unused (not labeled reserved)
  * 2:0	| TEMP_DLPFCFG	| low pass filter config (DS p67)
  * Reset Value: 0b00000000
  */
-static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0b00000000, 0b00000000 };
+static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0 };
 /* ICM20948 USER UBANK 2 REGISTERS END */
 
 
 /* REGISTER SUPPORT CONSTS START */
+/*
 // ODR computation formula in Hz (DS p59)
 static const float GYRO_UPDATE_FREQUENCY = 1100 / (1 + REG_GYRO_SMPLRT_DIV.init_value);
 static const uint32_t GYRO_UPDATE_PERIOD_MS = 1000 * (1 + (uint32_t) REG_GYRO_SMPLRT_DIV.init_value) / 1100;
@@ -274,6 +274,7 @@ static const float GYRO_SENSITIVITY_SCALE_FACTOR = 1.f / (131.f / ((REG_GYRO_CON
 
 // 16384 is typical value for FS_SEL = 0 (DS p11)
 static const float ACCEL_SENSITIVITY_SCALE_FACTOR = 1.f / (16384 >> ((REG_ACCEL_CONFIG_1.init_value & 0b110) >> 1));
+*/
 /* REGISTER SUPPORT CONSTS END */
 
 
@@ -293,7 +294,7 @@ typedef struct float_vector3 {
 
 
 /* DELAYS AND TIMEOUTS START */
-// Start-up time for register read/write from power-up
+// Start-up time for register read/write from power-up or reset
 static const uint32_t STARTUP_DELAY = 100;
 
 /* Start-up time for sensor output from sleep
@@ -302,12 +303,6 @@ static const uint32_t STARTUP_DELAY = 100;
  * MAG ~ 8ms
  */
 static const uint32_t WAKE_DELAY = 45;
-
-// Exact time between sensor read requests
-static const uint32_t READ_DELAY = 100;
-
-// Maximum time between sensor sleep and wake-up
-static const uint32_t MAXIMUM_SLEEP_DELAY = READ_DELAY - WAKE_DELAY;
 
 // Maximum time-out to wait for any sensor ACK
 static const uint32_t MAXIMUM_ICM_TIMEOUT = 20;
@@ -336,7 +331,7 @@ float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_f
 
 HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset);
 
-HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro);
+HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro, uint32_t gyro_update_period_ms);
 
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
