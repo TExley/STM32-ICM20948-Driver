@@ -340,4 +340,5 @@ HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro
 
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
+HAL_StatusTypeDef ICM20948_Reset();
 /* ICM20948 FUNCTIONS END */

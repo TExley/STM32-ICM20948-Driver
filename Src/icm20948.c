@@ -235,4 +235,12 @@ HAL_StatusTypeDef ICM20948_Sleep()
 {
 	return L_WritePowerRegister(REG_PWR_MGMT_1_VALUE_SLEEP);
 }
+
+HAL_StatusTypeDef ICM20948_Reset()
+{
+	HAL_StatusTypeDef status = L_WritePowerRegister(REG_PWR_MGMT_1_VALUE_RESET);
+	if (status == HAL_OK)
+		HAL_Delay(STARTUP_DELAY);
+	return status;
+}
 /* ICM20948 FUNCTIONS END */
