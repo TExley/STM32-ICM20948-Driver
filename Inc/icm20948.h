@@ -83,8 +83,8 @@ static const reg_RW REG_LP_CONFIG = { "LP_CONFIG", 0x05, UBANK_0 };
  */
 static const reg_RW REG_PWR_MGMT_1 = { "PWR_MGMT_1", 0x06, UBANK_0, 0b01000001, 0b00010000 };
 static const uint8_t REG_PWR_MGMT_1_VALUE_RESET = 0b10000000;
-static const uint8_t REG_PWR_MGMT_1_VALUE_WAKE = 0b00111111 & REG_PWR_MGMT_1.init_value;
-static const uint8_t REG_PWR_MGMT_1_VALUE_SLEEP = (0b01000000 | REG_PWR_MGMT_1.init_value) & ~REG_PWR_MGMT_1_VALUE_RESET;
+static const uint8_t REG_PWR_MGMT_1_VALUE_WAKE  = 0b00000000;
+static const uint8_t REG_PWR_MGMT_1_VALUE_SLEEP = 0b01000000;
 
 static const reg_R REG_ACCEL_XOUT_H = { "ACCEL_XOUT_H", 0x2D, UBANK_0 };
 static const reg_R REG_ACCEL_XOUT_L = { "ACCEL_XOUT_L", 0x2E, UBANK_0 };
