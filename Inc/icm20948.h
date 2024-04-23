@@ -149,7 +149,7 @@ static const reg_RW REG_ZA_OFFS_L = { "ZA_OFFS_L", 0x1B, UBANK_1, 0b00000001 };
 /* ICM20948 USER UBANK 2 REGISTERS START */
 /* BIT 	| NAME 				| DESC
  * 7:0 	| GYRO_SMPLRT_DIV	| sample rate dividor 1.1kHz/(1 + GYRO_SMPLRT_DIV)
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0 };
 
@@ -158,7 +158,7 @@ static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0 
  * 5:3	| GYRO_DLPFCFG	| low pass filter config (DS p60)
  * 2:1	| GYRO_FS_SEL	| full scale select (DS p59)
  * 0	| GYRO_FCHOICE	| 1 enable DLPF
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b11000000 };
 
@@ -168,63 +168,63 @@ static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b1100
  * 4	| YGYRO_CTEN	| 1 enable y self test
  * 3	| ZGYRO_CTEN	| 1 enable z self test
  * 2:0	| GYRO_AVGCFG	| average lp-mode filter config (DS p60)
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b11000000 };
 
 /* BIT 	| NAME 					| DESC
  * 7:0 	| XG_OFFS_USER[15:8]	| Upper bits of X gyro offset cancellation
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_XG_OFFS_USRH = { "XG_OFFS_USRH", 0x03, UBANK_2, 0 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| XG_OFFS_USER[7:0]	| Lower bits of X gyro offset cancellation
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_XG_OFFS_USRL = { "XG_OFFS_USRL", 0x04, UBANK_2, 0 };
 
 /* BIT 	| NAME 					| DESC
  * 7:0 	| YG_OFFS_USER[15:8]	| Upper bits of Y gyro offset cancellation
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_YG_OFFS_USRH = { "YG_OFFS_USRH", 0x05, UBANK_2, 0 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| YG_OFFS_USER[7:0]	| Lower bits of Y gyro offset cancellation
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_YG_OFFS_USRL = { "YG_OFFS_USRL", 0x06, UBANK_2, 0 };
 
 /* BIT 	| NAME 					| DESC
  * 7:0 	| ZG_OFFS_USER[15:8]	| Upper bits of Z gyro offset cancellation
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_ZG_OFFS_USRH = { "ZG_OFFS_USRH", 0x07, UBANK_2, 0 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| ZG_OFFS_USER[7:0]	| Lower bits of Z gyro offset cancellation
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_ZG_OFFS_USRL = { "ZG_OFFS_USRL", 0x08, UBANK_2, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:1 	| -				| reserved
  * 0	| ODR_ALIGN_EN	| sensor start time alignment if and smprt set
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_ODR_ALIGN_EN = { "ODR_ALIGN_EN", 0x09, UBANK_2, 0b11111110 };
 
 /* BIT 	| NAME 				| DESC
  * 7:4 	| -					| reserved
  * 3:0	| ACCEL_SMPLRT_DIV	| MSB for ACCEL_SMPLRT_DIV
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_ACCEL_SMPLRT_DIV_1 = { "ACCEL_SMPLRT_DIV_1", 0x10, UBANK_2, 0b11110000 };
 
 /* BIT 	| NAME 				| DESC
  * 7:0 	| ACCEL_SMPLRT_DIV	| LSB for sample rate dividor 1.125kHz/(1 + ACCEL_SMPLRT_DIV[11:0])
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK_2, 0 };
 
@@ -243,39 +243,19 @@ static const reg_RW REG_ACCEL_CONFIG_1 = { "ACCEL_CONFIG_1", 0x14, UBANK_2, 0b11
  * 3	| AY_ST_EN_REG	| 1 enable y self test
  * 2	| AZ_ST_EN_REG	| 1 enable z self test
  * 1:0	| DEC3_CFG		| controls samples averaged in devimator (DS p65)
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_ACCEL_CONFIG_2 = { "ACCEL_CONFIG_2", 0x15, UBANK_2, 0b11100000 };
 
 /* BIT 	| NAME 			| DESC
  * 7:3 	| -				| unused (not labeled reserved)
  * 2:0	| TEMP_DLPFCFG	| low pass filter config (DS p67)
- * Reset Value: 0b00000000
+ * Reset Value: 0
  */
 static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0 };
 /* ICM20948 USER UBANK 2 REGISTERS END */
 
 
-/* REGISTER SUPPORT CONSTS START */
-/*
-// ODR computation formula in Hz (DS p59)
-static const float GYRO_UPDATE_FREQUENCY = 1100 / (1 + REG_GYRO_SMPLRT_DIV.init_value);
-static const uint32_t GYRO_UPDATE_PERIOD_MS = 1000 * (1 + (uint32_t) REG_GYRO_SMPLRT_DIV.init_value) / 1100;
-
-// ODR computation formula in Hz (DS p63)
-static const float ACCEL_UPDATE_FREQUENCY =
-		1100 / (1 + (((uint16_t) REG_ACCEL_SMPLRT_DIV_1.init_value) << BITS_PER_BYTE) + REG_ACCEL_SMPLRT_DIV_2.init_value);
-static const uint32_t ACCEL_UPDATE_PERIOD_MS =
-		1000 * (1 + (((uint32_t) REG_ACCEL_SMPLRT_DIV_1.init_value) << BITS_PER_BYTE) + REG_ACCEL_SMPLRT_DIV_2.init_value) / 1100;
-
-// 131 is typical value for FS_SEL = 0 (DS p11)
-// 131 = 0xFFFF / 250 (lowest dps range of gyro)
-static const float GYRO_SENSITIVITY_SCALE_FACTOR = 1.f / (131.f / ((REG_GYRO_CONFIG_1.init_value & 0b110) >> 1));
-
-// 16384 is typical value for FS_SEL = 0 (DS p11)
-static const float ACCEL_SENSITIVITY_SCALE_FACTOR = 1.f / (16384 >> ((REG_ACCEL_CONFIG_1.init_value & 0b110) >> 1));
-*/
-/* REGISTER SUPPORT CONSTS END */
 
 
 /* SENSOR SUPPORT STRUCTS START */
