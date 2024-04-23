@@ -318,12 +318,12 @@ static const uint32_t WAKE_DELAY = 45;
 // Maximum time-out to wait for any sensor ACK
 static const uint32_t MAXIMUM_ICM_TIMEOUT = 20;
 /* DELAYS AND TIMEOUTS END */
-/* ICM20948 CONSTANTS END */
 
 
 /* ICM20948 ENUMS START */
 typedef enum SDO_Pinouts {SDO_LOW, SDO_HIGH} SDO_Pinouts;
 /* ICM20948 ENUMS END */
+/* ICM20948 CONSTANTS END */
 
 
 /* ICM20948 FUNCTIONS START */
@@ -340,9 +340,8 @@ HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vecto
 HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro);
 float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_factor);
 
-HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset);
-
 HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro, uint32_t gyro_update_period_ms);
+HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset);
 
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
