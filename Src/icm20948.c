@@ -106,7 +106,7 @@ HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
 	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
 }
 
-HAL_StatusTypeDef ICM20948_WriteRegisterEnables(reg_RW* regi, uint8_t data)
+HAL_StatusTypeDef ICM20948_WriteRegisterEnables(const reg_RW* regi, uint8_t data)
 {
 	uint8_t data_read;
 	HAL_StatusTypeDef status = ICM20948_ReadRegister((reg_R*) regi, &data_read);
@@ -119,7 +119,7 @@ HAL_StatusTypeDef ICM20948_WriteRegisterEnables(reg_RW* regi, uint8_t data)
 	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
 }
 
-HAL_StatusTypeDef ICM20948_WriteRegisterDisables(reg_RW* regi, uint8_t data)
+HAL_StatusTypeDef ICM20948_WriteRegisterDisables(const reg_RW* regi, uint8_t data)
 {
 	uint8_t data_read;
 	HAL_StatusTypeDef status = ICM20948_ReadRegister((reg_R*) regi, &data_read);

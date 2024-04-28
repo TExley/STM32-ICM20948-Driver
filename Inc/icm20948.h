@@ -383,8 +383,8 @@ HAL_StatusTypeDef ICM20948_ChangeUserBank(user_bank ubank);
 HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data);
 HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint16_t size);
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data);
-HAL_StatusTypeDef ICM20948_WriteRegisterEnables(reg_RW* regi, uint8_t data);
-HAL_StatusTypeDef ICM20948_WriteRegisterDisables(reg_RW* regi, uint8_t data);
+HAL_StatusTypeDef ICM20948_WriteRegisterEnables(const reg_RW* regi, uint8_t data);
+HAL_StatusTypeDef ICM20948_WriteRegisterDisables(const reg_RW* regi, uint8_t data);
 
 HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro);
 HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro);
