@@ -496,6 +496,35 @@ typedef enum SDO_Pinouts {SDO_LOW, SDO_HIGH} SDO_Pinouts;
 /* ICM20948 CONSTANTS END */
 
 
+/* AK09916 CONSTANTS START */
+static const uint8_t AK09916_ADDR = 0x18;
+
+typedef enum CNTL2_Mode {
+	POWER_DOWN 	   = 0,
+	SINGLE_MEASURE = 0b000001,
+	CONT_MEASURE_1 = 0b000010,
+	CONT_MEASURE_2 = 0b000100,
+	CONT_MEASURE_3 = 0b000110,
+	CONT_MEASURE_4 = 0b010000,
+	SELF_TEST 	   = 0b100000
+} CNTL2_Mode;
+
+typedef enum AK09916_Register {
+	WIA = 0x01,
+	ST1 = 0x10,
+	HXL = 0x11,
+	HXH = 0x12,
+	HYL = 0x13,
+	HYH = 0x14,
+	HZL = 0x15,
+	HZH = 0x16,
+	ST2 = 0x18,
+	CNTL2 = 0x31,
+	CNTL3 = 0x32
+} AK09916_Register;
+/* AK09916 CONSTANTS END */
+
+
 /* ICM20948 FUNCTIONS START */
 HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* hi2c, SDO_Pinouts pinout);
 
@@ -518,4 +547,9 @@ HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset);
 HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
 HAL_StatusTypeDef ICM20948_Reset();
+
+HAL_StatusTypeDef AK09916_Init();
+HAL_StatusTypeDef AK09916_Read(AK09916_Register regi, uint8_t* data);
+HAL_StatusTypeDef AK09916_SetCNTL2(CNTL2_Mode mode);
+HAL_StatusTypeDef AK09916_Reset();
 /* ICM20948 FUNCTIONS END */
