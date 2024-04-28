@@ -73,6 +73,16 @@ static const uint8_t REG_WHO_AM_I_VALUE = 0xEA; // Read Only Value
  * Reset Value: 0
  */
 static const reg_RW REG_USER_CTRL = { "USER_CTRL", 0x03, UBANK_0, 0 };
+typedef enum user_ctrl_opts {
+		I2C_MST_RST = 0b00000010,
+		SRAM_RST 	= 0b00000100,
+		DMP_RST 	= 0b00001000,
+		I2C_IF_DIS 	= 0b00010000,
+		I2C_MST_EN 	= 0b00100000,
+		FIFO_EN 	= 0b01000000,
+		DMP_EN 		= 0b10000000,
+} user_ctrl_opts;
+
 /* BIT 	| NAME 			| DESC
  * 7 	| -				| reserved
  * 6	| I2C_MST_CYCLE	| (See p68 for I2C_MST_ODR_CONFIG)
@@ -93,9 +103,15 @@ static const reg_RW REG_LP_CONFIG = { "LP_CONFIG", 0x05, UBANK_0, 0b10001111 };
  * Reset Value: 0b01000001
  */
 static const reg_RW REG_PWR_MGMT_1 = { "PWR_MGMT_1", 0x06, UBANK_0, 0b00010000 };
-static const uint8_t REG_PWR_MGMT_1_VALUE_RESET = 0b10000000;
-static const uint8_t REG_PWR_MGMT_1_VALUE_WAKE  = 0b00000000;
-static const uint8_t REG_PWR_MGMT_1_VALUE_SLEEP = 0b01000000;
+typedef enum pwr_mgmt_1_opts {
+		CLKSEL_AUTO 	= 0b00000001,
+		CLKSEL_INTERNAL	= 0b00000110,
+		CLKSEL_STOP		= 0b00000111,
+		TEMP_DIS 		= 0b00001000,
+		LP_EN 			= 0b00100000,
+		SLEEP 			= 0b01000000,
+		DEVICE_RESET 	= 0b10000000,
+} pwr_mgmt_1_opts;
 
 static const reg_R REG_ACCEL_XOUT_H = { "ACCEL_XOUT_H", 0x2D, UBANK_0 };
 static const reg_R REG_ACCEL_XOUT_L = { "ACCEL_XOUT_L", 0x2E, UBANK_0 };
@@ -367,6 +383,8 @@ HAL_StatusTypeDef ICM20948_ChangeUserBank(user_bank ubank);
 HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data);
 HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint16_t size);
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data);
+HAL_StatusTypeDef ICM20948_WriteRegisterEnables(reg_RW* regi, uint8_t data);
+HAL_StatusTypeDef ICM20948_WriteRegisterDisables(reg_RW* regi, uint8_t data);
 
 HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro);
 HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro);

@@ -106,6 +106,32 @@ HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data)
 	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
 }
 
+HAL_StatusTypeDef ICM20948_WriteRegisterEnables(reg_RW* regi, uint8_t data)
+{
+	uint8_t data_read;
+	HAL_StatusTypeDef status = ICM20948_ReadRegister((reg_R*) regi, &data_read);
+	if (status != HAL_OK)
+		return status;
+
+	data &= ~regi->reserved_mask; // Make sure we aren't writing to reserved bits
+	data |= data_read;
+
+	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
+}
+
+HAL_StatusTypeDef ICM20948_WriteRegisterDisables(reg_RW* regi, uint8_t data)
+{
+	uint8_t data_read;
+	HAL_StatusTypeDef status = ICM20948_ReadRegister((reg_R*) regi, &data_read);
+	if (status != HAL_OK)
+		return status;
+
+	data = ~data | regi->reserved_mask; // Make sure we aren't writing to reserved bits
+	data &= data_read;
+
+	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, regi->address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
+}
+
 // Local function
 int16_t L_CombineRegisters(uint8_t data_H, uint8_t data_L)
 {
@@ -210,23 +236,9 @@ HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset)
 	return HAL_OK;
 }
 
-// Local function
-HAL_StatusTypeDef L_WritePowerRegister(uint8_t option)
-{
-	uint8_t data_read;
-	HAL_StatusTypeDef status = ICM20948_ReadRegister((reg_R*) &REG_PWR_MGMT_1, &data_read);
-	if (status != HAL_OK)
-		return status;
-
-	uint8_t data = (option ^ data_read) & ~REG_PWR_MGMT_1.reserved_mask; // Non-reserved bits changed by option set to 1
-	data = (option & data) | (data_read & ~data); // Only non-reserved new bits changed from data_read
-
-	return HAL_I2C_Mem_Write(hi2c, ICM20948_ADDR, REG_PWR_MGMT_1.address, I2C_MEMADD_SIZE_8BIT, &data, 1, MAXIMUM_ICM_TIMEOUT);
-}
-
 HAL_StatusTypeDef ICM20948_Wake()
 {
-	HAL_StatusTypeDef status = L_WritePowerRegister(REG_PWR_MGMT_1_VALUE_WAKE);
+	HAL_StatusTypeDef status = ICM20948_WriteRegisterDisables(&REG_PWR_MGMT_1, SLEEP);
 	if (status == HAL_OK)
 		HAL_Delay(WAKE_DELAY);
 	return status;
@@ -234,12 +246,12 @@ HAL_StatusTypeDef ICM20948_Wake()
 
 HAL_StatusTypeDef ICM20948_Sleep()
 {
-	return L_WritePowerRegister(REG_PWR_MGMT_1_VALUE_SLEEP);
+	return ICM20948_WriteRegisterEnables(&REG_PWR_MGMT_1, SLEEP);
 }
 
 HAL_StatusTypeDef ICM20948_Reset()
 {
-	HAL_StatusTypeDef status = L_WritePowerRegister(REG_PWR_MGMT_1_VALUE_RESET);
+	HAL_StatusTypeDef status = ICM20948_WriteRegisterEnables(&REG_PWR_MGMT_1, DEVICE_RESET);
 	if (status == HAL_OK)
 		HAL_Delay(STARTUP_DELAY);
 	return status;
