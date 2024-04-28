@@ -62,6 +62,18 @@ static const reg_R REG_WHO_AM_I = { "WHO_AM_I", 0x00, UBANK_0 };
 static const uint8_t REG_WHO_AM_I_VALUE = 0xEA; // Read Only Value
 
 /* BIT 	| NAME 			| DESC
+ * 7 	| DMP_EN		| 1 enables DMP features
+ * 6	| FIFO_EN		| 1 enables FIFO operation mode
+ * 5	| I2C_MST_EN	| 1 enables I2C master I/F module. isolates ES_DA/ES_SCL from SDA/SCL
+ * 4	| I2C_IF_DIS	| 1 reset I2C and enter SPI mode only
+ * 3	| DMP_RST		| 1 asynchronous reset of DMP module, bit clears after one clock cycle
+ * 2	| SRAM_RST		| 1 asynchronous reset of SRAM module, bit clears after one clock cycle
+ * 1	| I2C_MST_RST	| 1 asynchronous reset of I2C module, bit clears after one clock cycle
+ * 0	| -				| reserved
+ * Reset Value: 0
+ */
+static const reg_RW REG_USER_CTRL = { "USER_CTRL", 0x03, UBANK_0, 0 };
+/* BIT 	| NAME 			| DESC
  * 7 	| -				| reserved
  * 6	| I2C_MST_CYCLE	| (See p68 for I2C_MST_ODR_CONFIG)
  * 5	| ACCEL_CYCLE	| 1 sets duty cycled mode
@@ -101,6 +113,17 @@ static const reg_R REG_GYRO_ZOUT_L = { "GYRO_ZOUT_L", 0x38, UBANK_0 };
 
 static const reg_R REG_TEMP_OUT_H = { "TEMP_OUT_H", 0x33, UBANK_0 };
 static const reg_R REG_TEMP_OUT_L = { "TEMP_OUT_L", 0x34, UBANK_0 };
+
+static const reg_R REG_EXT_SLV_SENS_DATA_00 = { "EXT_SLV_SENS_DATA_00", 0x3B, UBANK_0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:4 	| -				| reserved
+ * 3 	| SLV_3_FIFO_EN	| write associated EXT_SENS_DATA registers to FIFO at sample rate
+ * 2	| SLV_2_FIFO_EN	| write associated EXT_SENS_DATA registers to FIFO at sample rate
+ * 1 	| SLV_1_FIFO_EN	| write associated EXT_SENS_DATA registers to FIFO at sample rate
+ * 0 	| SLV_0_FIFO_EN	| write associated EXT_SENS_DATA registers to FIFO at sample rate
+ */
+static const reg_RW REG_FIFO_EN_1 = { "FIFO_EN_1", 0x66, UBANK_0, 0b11110000};
 /* ICM20948 USER UBANK 0 REGISTERS END */
 
 
@@ -257,6 +280,15 @@ static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0 };
 
 
 /* ICM20948 USER UBANK 3 REGISTERS START */
+/* BIT 	| NAME 			| DESC
+ * 7 	| MULT_MST_EN	| enables multi-master capability
+ * 6:5	| -				| reserved
+ * 4	| I2C_MST_P_NSR	| 1/0 sets transition btwn reads to stop/restart
+ * 3:0	| I2C_MST_CLK	| sets I2C master clock frequency (DS p68)
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_MST_CTRL = { "I2C_MST_CTRL", 0x01, UBANK_3, 0b01100000 };
+
 /* BIT 	| NAME 			| DESC
  * 7 	| I2C_SLV0_RNW	| 1/0 – Transfer is a read/write
  * 6:0	| I2C_ID_0		| physical address of I2C slave 0
