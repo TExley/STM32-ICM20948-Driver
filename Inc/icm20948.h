@@ -502,7 +502,8 @@ typedef enum SDO_Pinouts {SDO_LOW, SDO_HIGH} SDO_Pinouts;
 
 
 /* AK09916 CONSTANTS START */
-static const uint8_t AK09916_ADDR = 0x18;
+static const uint8_t AK09916_ADDR_READ = 0x8C;
+static const uint8_t AK09916_ADDR_WRITE = 0x0C;
 
 typedef enum cntl2_modes {
 	POWER_DOWN 	   = 0,
