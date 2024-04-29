@@ -514,6 +514,10 @@ typedef enum cntl2_modes {
 	SELF_TEST 	   = 0b00010000
 } cntl2_modes;
 
+typedef enum cntl3_modes {
+	SOFT_RESET = 0b000001
+} cntl3_modes;
+
 typedef enum AK09916_Register {
 	WIA = 0x01,
 	ST1 = 0x10,
