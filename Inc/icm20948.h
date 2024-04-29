@@ -518,7 +518,7 @@ typedef enum cntl3_modes {
 	SOFT_RESET = 0b000001
 } cntl3_modes;
 
-typedef enum AK09916_Register {
+typedef enum AK09916_register {
 	WIA = 0x01,
 	ST1 = 0x10,
 	HXL = 0x11,
@@ -530,7 +530,7 @@ typedef enum AK09916_Register {
 	ST2 = 0x18,
 	CNTL2 = 0x31,
 	CNTL3 = 0x32
-} AK09916_Register;
+} AK09916_register;
 /* AK09916 CONSTANTS END */
 
 
@@ -558,7 +558,7 @@ HAL_StatusTypeDef ICM20948_Sleep();
 HAL_StatusTypeDef ICM20948_Reset();
 
 HAL_StatusTypeDef AK09916_Init();
-HAL_StatusTypeDef AK09916_Read(AK09916_Register regi, uint8_t* data);
-HAL_StatusTypeDef AK09916_SetCNTL2(CNTL2_Mode mode);
+HAL_StatusTypeDef AK09916_Read(AK09916_register regi, uint8_t* data);
+HAL_StatusTypeDef AK09916_SetCNTL2(cntl2_modes mode);
 HAL_StatusTypeDef AK09916_Reset();
 /* ICM20948 FUNCTIONS END */
