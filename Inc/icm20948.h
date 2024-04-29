@@ -37,7 +37,12 @@ typedef struct reg {
  */
 static const reg REG_UBANK_SEL = { "UBANK_SEL", 0x7F}; // A RW register but cannot be used in reg_RW or reg_R functions
 static const uint8_t REG_UBANK_SEL_RESERVED_MASK = 0b11001111;
-typedef enum user_bank {UBANK_0 = 0x0, UBANK_1 = 0x10, UBANK_2 = 0x20, UBANK_3 = 0x30} user_bank;
+typedef enum user_bank {
+	UBANK_0 = 0x0,
+	UBANK_1 = 0x10,
+	UBANK_2 = 0x20,
+	UBANK_3 = 0x30
+} user_bank;
 /* ICM20948 USER UBANK SELECT REGISTER END */
 
 
