@@ -76,7 +76,7 @@ HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data)
 	return ICM20948_ReadRegisters(regi, data, 1);
 }
 
-HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint16_t size)
+HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint8_t size)
 {
 	HAL_StatusTypeDef status = L_CheckUserRegister(regi);
 	if (status != HAL_OK)
