@@ -549,8 +549,10 @@ HAL_StatusTypeDef ICM20948_WriteRegisterEnables(const reg_RW* regi, uint8_t data
 HAL_StatusTypeDef ICM20948_WriteRegisterEnDisables(const reg_RW* regi, uint8_t data_en, uint8_t data_dis);
 HAL_StatusTypeDef ICM20948_WriteRegisterDisables(const reg_RW* regi, uint8_t data);
 
-HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro);
+HAL_StatusTypeDef ICM20948_ReadAccelRegisters(int16_vector3* accel);
+HAL_StatusTypeDef ICM20948_ReadMagRegisters(int16_vector3* mag);
 HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro);
+HAL_StatusTypeDef ICM20948_ReadAccelGryoRegisters(int16_vector3* accel, int16_vector3* gyro);
 float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_factor);
 
 HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro, uint32_t gyro_update_period_ms);

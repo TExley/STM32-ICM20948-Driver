@@ -162,19 +162,29 @@ int16_t L_CombineRegisters(uint8_t data_H, uint8_t data_L)
 	return (((int16_t) data_H) << BITS_PER_BYTE) | data_L;
 }
 
-HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro)
+HAL_StatusTypeDef ICM20948_ReadAccelRegisters(int16_vector3* accel)
 {
-	uint8_t data[NUMBER_ONBOARD_SENSOR_REGISTERS];
-	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_ACCEL_XOUT_H, data, NUMBER_ONBOARD_SENSOR_REGISTERS);
+	uint8_t data[NUMBER_ONBOARD_SENSOR_REGISTERS_HALF];
+	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_ACCEL_XOUT_H, data, NUMBER_ONBOARD_SENSOR_REGISTERS_HALF);
 	if (status != HAL_OK)
 		return status;
 
 	accel->x = L_CombineRegisters(data[0], data[1]);
 	accel->y = L_CombineRegisters(data[2], data[3]);
 	accel->z = L_CombineRegisters(data[4], data[5]);
-	gyro->x = L_CombineRegisters(data[6], data[7]);
-	gyro->y = L_CombineRegisters(data[8], data[9]);
-	gyro->z = L_CombineRegisters(data[10], data[11]);
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef ICM20948_ReadMagRegisters(int16_vector3* mag)
+{
+	uint8_t data[NUMBER_ONBOARD_SENSOR_REGISTERS_HALF];
+	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_EXT_SLV_SENS_DATA_00, data, NUMBER_ONBOARD_SENSOR_REGISTERS_HALF);
+	if (status != HAL_OK)
+		return status;
+
+	mag->x = L_CombineRegisters(data[0], data[1]);
+	mag->y = L_CombineRegisters(data[2], data[3]);
+	mag->z = L_CombineRegisters(data[4], data[5]);
 	return HAL_OK;
 }
 
@@ -188,6 +198,22 @@ HAL_StatusTypeDef ICM20948_ReadGyroRegisters(int16_vector3* gyro)
 	gyro->x = L_CombineRegisters(data[0], data[1]);
 	gyro->y = L_CombineRegisters(data[2], data[3]);
 	gyro->z = L_CombineRegisters(data[4], data[5]);
+	return HAL_OK;
+}
+
+HAL_StatusTypeDef ICM20948_ReadAccelGryoRegisters(int16_vector3* accel, int16_vector3* gyro)
+{
+	uint8_t data[NUMBER_ONBOARD_SENSOR_REGISTERS];
+	HAL_StatusTypeDef status = ICM20948_ReadRegisters(&REG_ACCEL_XOUT_H, data, NUMBER_ONBOARD_SENSOR_REGISTERS);
+	if (status != HAL_OK)
+		return status;
+
+	accel->x = L_CombineRegisters(data[0], data[1]);
+	accel->y = L_CombineRegisters(data[2], data[3]);
+	accel->z = L_CombineRegisters(data[4], data[5]);
+	gyro->x = L_CombineRegisters(data[6], data[7]);
+	gyro->y = L_CombineRegisters(data[8], data[9]);
+	gyro->z = L_CombineRegisters(data[10], data[11]);
 	return HAL_OK;
 }
 
@@ -322,7 +348,9 @@ HAL_StatusTypeDef AK09916_Init()
 	if (status != HAL_OK)
 		return status;
 
-	return AK09916_ReadRegisters(HXL, &data, I2C_SLV_LENG_8);
+	uint8_t data_buff[I2C_SLV_LENG_8];
+
+	return AK09916_ReadRegisters(HXL, data_buff, I2C_SLV_LENG_8);
 }
 
 HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, uint8_t size)
