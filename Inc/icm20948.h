@@ -545,6 +545,7 @@ HAL_StatusTypeDef ICM20948_ReadRegister(const reg_R* regi, uint8_t* data);
 HAL_StatusTypeDef ICM20948_ReadRegisters(const reg_R* regi, uint8_t* data, uint8_t size);
 HAL_StatusTypeDef ICM20948_WriteRegister(const reg_RW* regi, uint8_t data);
 HAL_StatusTypeDef ICM20948_WriteRegisterEnables(const reg_RW* regi, uint8_t data);
+HAL_StatusTypeDef ICM20948_WriteRegisterEnDisables(const reg_RW* regi, uint8_t data_en, uint8_t data_dis);
 HAL_StatusTypeDef ICM20948_WriteRegisterDisables(const reg_RW* regi, uint8_t data);
 
 HAL_StatusTypeDef ICM20948_ReadSensorRegisters(int16_vector3* accel, int16_vector3* gyro);
@@ -559,7 +560,7 @@ HAL_StatusTypeDef ICM20948_Sleep();
 HAL_StatusTypeDef ICM20948_Reset();
 
 HAL_StatusTypeDef AK09916_Init();
-HAL_StatusTypeDef AK09916_Read(AK09916_register regi, uint8_t* data);
+HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, uint8_t size);
 HAL_StatusTypeDef AK09916_SetCNTL2(cntl2_modes mode);
 HAL_StatusTypeDef AK09916_Reset();
 /* ICM20948 FUNCTIONS END */
