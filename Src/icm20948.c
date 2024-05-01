@@ -315,7 +315,7 @@ HAL_StatusTypeDef AK09916_Init()
 	status = AK09916_ReadRegisters(WIA, &data, I2C_SLV_LENG_1);
 	if (status != HAL_OK)
 		return status;
-	else if (data != AK09916_ADDR_WRITE)
+	else if (data != AK09916_WIA_VALUE)
 		return HAL_ERROR;
 
 	status = AK09916_SetCNTL2(CONT_MEASURE_4);
