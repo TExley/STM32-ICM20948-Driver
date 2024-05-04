@@ -378,6 +378,13 @@ typedef enum temp_config_opts {
 
 
 /* ICM20948 USER UBANK 3 REGISTERS START */
+/* BIT 	| NAME 					| DESC
+ * 7:4 	| -						| reserved
+ * 3:0	| I2C_MST_ODR_CONFIG	| sample rate dividor 1.1kHz/(2^I2C_MST_ODR_CONFIG)
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_MST_ODR_CONFIG = { "I2C_MST_ODR_CONFIG", 0x00, UBANK_3, 0b11110000 };
+
 /* BIT 	| NAME 			| DESC
  * 7 	| MULT_MST_EN	| enables multi-master capability
  * 6:5	| -				| reserved
