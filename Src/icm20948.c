@@ -182,9 +182,9 @@ HAL_StatusTypeDef ICM20948_ReadMagRegisters(int16_vector3* mag)
 	if (status != HAL_OK)
 		return status;
 
-	mag->x = L_CombineRegisters(data[0], data[1]);
-	mag->y = L_CombineRegisters(data[2], data[3]);
-	mag->z = L_CombineRegisters(data[4], data[5]);
+	mag->x = L_CombineRegisters(data[1], data[0]);
+	mag->y = L_CombineRegisters(data[3], data[2]);
+	mag->z = L_CombineRegisters(data[5], data[4]);
 	return HAL_OK;
 }
 
