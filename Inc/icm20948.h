@@ -9,7 +9,6 @@
 
 #include "stm32l4xx_hal.h"
 
-
 #define BITS_PER_BYTE 8
 
 /* ICM20948 CONSTANTS START */
@@ -19,14 +18,13 @@ static const uint16_t ICM20948_ADDR_L = 0xD0; // SDO(AD0) pin is low
 static const uint16_t ICM20948_ADDR_H = 0xD2; // SDO(AD0) pin is high
 /* ICM20948 SLAVE ADDRESSES END */
 
-
 /* ICM20948 REGISTER DEFINITION START */
-typedef struct reg {
+typedef struct reg
+{
 	const char* name;
 	const uint16_t address;
 } reg;
 /* ICM20948 REGISTER DEFINITION END */
-
 
 /* ICM20948 USER UBANK SELECT REGISTER START */
 /* BIT 	| NAME 		| DESC
@@ -35,9 +33,10 @@ typedef struct reg {
  * 3:0	| -			| reserved
  * Reset Value: 0b01000000
  */
-static const reg REG_UBANK_SEL = { "UBANK_SEL", 0x7F}; // A RW register but cannot be used in reg_RW or reg_R functions
+static const reg REG_UBANK_SEL = { "UBANK_SEL", 0x7F }; // A RW register but cannot be used in reg_RW or reg_R functions
 static const uint8_t REG_UBANK_SEL_RESERVED_MASK = 0b11001111;
-typedef enum user_bank {
+typedef enum user_bank
+{
 	UBANK_0 = 0x0,
 	UBANK_1 = 0x10,
 	UBANK_2 = 0x20,
@@ -45,22 +44,22 @@ typedef enum user_bank {
 } user_bank;
 /* ICM20948 USER UBANK SELECT REGISTER END */
 
-
 /* ICM20948 REGISTER DEFINITION CONTINUED START */
-typedef struct reg_R {
+typedef struct reg_R
+{
 	const char* name;
 	const uint16_t address;
 	const user_bank bank;
 } reg_R;
 
-typedef struct reg_RW {
+typedef struct reg_RW
+{
 	const char* name;
 	const uint16_t address;
 	const user_bank bank;
 	const uint8_t reserved_mask;
 } reg_RW;
 /* ICM20948 REGISTER DEFINITION CONTINUED END */
-
 
 /* ICM20948 USER UBANK 0 REGISTERS START */
 static const reg_R REG_WHO_AM_I = { "WHO_AM_I", 0x00, UBANK_0 };
@@ -78,14 +77,15 @@ static const uint8_t REG_WHO_AM_I_VALUE = 0xEA; // Read Only Value
  * Reset Value: 0
  */
 static const reg_RW REG_USER_CTRL = { "USER_CTRL", 0x03, UBANK_0, 0 };
-typedef enum user_ctrl_opts {
+typedef enum user_ctrl_opts
+{
 	I2C_MST_RST = 0b00000010,
-	SRAM_RST 	= 0b00000100,
-	DMP_RST 	= 0b00001000,
-	I2C_IF_DIS 	= 0b00010000,
-	I2C_MST_EN 	= 0b00100000,
-	FIFO_EN 	= 0b01000000,
-	DMP_EN 		= 0b10000000
+	SRAM_RST = 0b00000100,
+	DMP_RST = 0b00001000,
+	I2C_IF_DIS = 0b00010000,
+	I2C_MST_EN = 0b00100000,
+	FIFO_EN = 0b01000000,
+	DMP_EN = 0b10000000
 } user_ctrl_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -97,10 +97,11 @@ typedef enum user_ctrl_opts {
  * Reset Value: 0b01000000
  */
 static const reg_RW REG_LP_CONFIG = { "LP_CONFIG", 0x05, UBANK_0, 0b10001111 };
-typedef enum lp_config_opts {
-	GYRO_CYCLE		= 0b00010000,
-	ACCEL_CYCLE 	= 0b00100000,
-	I2C_MST_CYCLE 	= 0b01000000
+typedef enum lp_config_opts
+{
+	GYRO_CYCLE = 0b00010000,
+	ACCEL_CYCLE = 0b00100000,
+	I2C_MST_CYCLE = 0b01000000
 } lp_config_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -113,14 +114,15 @@ typedef enum lp_config_opts {
  * Reset Value: 0b01000001
  */
 static const reg_RW REG_PWR_MGMT_1 = { "PWR_MGMT_1", 0x06, UBANK_0, 0b00010000 };
-typedef enum pwr_mgmt_1_opts {
-	CLKSEL_AUTO 	= 0b00000001,
-	CLKSEL_INTERNAL	= 0b00000110,
-	CLKSEL_STOP		= 0b00000111,
-	TEMP_DIS 		= 0b00001000,
-	LP_EN			= 0b00100000,
-	SLEEP 			= 0b01000000,
-	DEVICE_RESET 	= 0b10000000
+typedef enum pwr_mgmt_1_opts
+{
+	CLKSEL_AUTO = 0b00000001,
+	CLKSEL_INTERNAL = 0b00000110,
+	CLKSEL_STOP = 0b00000111,
+	TEMP_DIS = 0b00001000,
+	LP_EN = 0b00100000,
+	SLEEP = 0b01000000,
+	DEVICE_RESET = 0b10000000
 } pwr_mgmt_1_opts;
 
 static const reg_R REG_ACCEL_XOUT_H = { "ACCEL_XOUT_H", 0x2D, UBANK_0 };
@@ -149,16 +151,16 @@ static const reg_R REG_EXT_SLV_SENS_DATA_00 = { "EXT_SLV_SENS_DATA_00", 0x3B, UB
  * 1 	| SLV_1_FIFO_EN	| write associated EXT_SENS_DATA registers to FIFO at sample rate
  * 0 	| SLV_0_FIFO_EN	| write associated EXT_SENS_DATA registers to FIFO at sample rate
  */
-static const reg_RW REG_FIFO_EN_1 = { "FIFO_EN_1", 0x66, UBANK_0, 0b11110000};
-typedef enum fifo_en_1_opts {
-	SLV_0_FIFO_EN 	= 0b00000001,
-	SLV_1_FIFO_EN	= 0b00000010,
-	SLV_2_FIFO_EN	= 0b00000100,
-	SLV_3_FIFO_EN 	= 0b00001000
+static const reg_RW REG_FIFO_EN_1 = { "FIFO_EN_1", 0x66, UBANK_0, 0b11110000 };
+typedef enum fifo_en_1_opts
+{
+	SLV_0_FIFO_EN = 0b00000001,
+	SLV_1_FIFO_EN = 0b00000010,
+	SLV_2_FIFO_EN = 0b00000100,
+	SLV_3_FIFO_EN = 0b00001000
 } fifo_en_1_opts;
 
 /* ICM20948 USER UBANK 0 REGISTERS END */
-
 
 /* ICM20948 USER UBANK 1 REGISTERS START */
 /* BIT 	| NAME 			| DESC
@@ -201,7 +203,6 @@ static const reg_RW REG_ZA_OFFS_H = { "ZA_OFFS_H", 0x1A, UBANK_1, 0 };
 static const reg_RW REG_ZA_OFFS_L = { "ZA_OFFS_L", 0x1B, UBANK_1, 0b00000001 };
 /* ICM20948 USER UBANK 1 REGISTERS END */
 
-
 /* ICM20948 USER UBANK 2 REGISTERS START */
 /* BIT 	| NAME 				| DESC
  * 7:0 	| GYRO_SMPLRT_DIV	| sample rate dividor 1.1kHz/(1 + GYRO_SMPLRT_DIV)
@@ -217,20 +218,21 @@ static const reg_RW REG_GYRO_SMPLRT_DIV = { "GYRO_SMPLRT_DIV", 0x00, UBANK_2, 0 
  * Reset Value: 0
  */
 static const reg_RW REG_GYRO_CONFIG_1 = { "GYRO_CONFIG_1", 0x01, UBANK_2, 0b11000000 };
-typedef enum gyro_config_1_opts {
-	GYRO_FCHOICE 		= 0b00000001,
+typedef enum gyro_config_1_opts
+{
+	GYRO_FCHOICE = 0b00000001,
 	// GYRO_FS_SEL_250 by default
-	GYRO_FS_SEL_500 	= 0b00000010,
-	GYRO_FS_SEL_1000 	= 0b00000100,
-	GYRO_FS_SEL_2000 	= 0b00000110,
+	GYRO_FS_SEL_500 = 0b00000010,
+	GYRO_FS_SEL_1000 = 0b00000100,
+	GYRO_FS_SEL_2000 = 0b00000110,
 	// GYRO_DLPFCFG_0 by default
-	GYRO_DLPFCFG_1 		= 0b00001000,
-	GYRO_DLPFCFG_2 		= 0b00010000,
-	GYRO_DLPFCFG_3 		= 0b00011000,
-	GYRO_DLPFCFG_4 		= 0b00100000,
-	GYRO_DLPFCFG_5 		= 0b00101000,
-	GYRO_DLPFCFG_6 		= 0b00110000,
-	GYRO_DLPFCFG_7 		= 0b00111000
+	GYRO_DLPFCFG_1 = 0b00001000,
+	GYRO_DLPFCFG_2 = 0b00010000,
+	GYRO_DLPFCFG_3 = 0b00011000,
+	GYRO_DLPFCFG_4 = 0b00100000,
+	GYRO_DLPFCFG_5 = 0b00101000,
+	GYRO_DLPFCFG_6 = 0b00110000,
+	GYRO_DLPFCFG_7 = 0b00111000
 } gyro_config_1_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -242,18 +244,19 @@ typedef enum gyro_config_1_opts {
  * Reset Value: 0
  */
 static const reg_RW REG_GYRO_CONFIG_2 = { "GYRO_CONFIG_2", 0x02, UBANK_2, 0b11000000 };
-typedef enum gyro_config_2_opts {
+typedef enum gyro_config_2_opts
+{
 	// GYRO_AVGCFG_1x by default
-	GYRO_AVGCFG_2x 		= 0b00000001,
-	GYRO_AVGCFG_4x 		= 0b00000010,
-	GYRO_AVGCFG_8x 		= 0b00000011,
-	GYRO_AVGCFG_16x 	= 0b00000100,
-	GYRO_AVGCFG_32x 	= 0b00000101,
-	GYRO_AVGCFG_64x 	= 0b00000110,
-	GYRO_AVGCFG_128x 	= 0b00000111,
-	ZGYRO_CTEN 			= 0b00001000,
-	YGYRO_CTEN 			= 0b00010000,
-	XGYRO_CTEN 			= 0b00100000
+	GYRO_AVGCFG_2x = 0b00000001,
+	GYRO_AVGCFG_4x = 0b00000010,
+	GYRO_AVGCFG_8x = 0b00000011,
+	GYRO_AVGCFG_16x = 0b00000100,
+	GYRO_AVGCFG_32x = 0b00000101,
+	GYRO_AVGCFG_64x = 0b00000110,
+	GYRO_AVGCFG_128x = 0b00000111,
+	ZGYRO_CTEN = 0b00001000,
+	YGYRO_CTEN = 0b00010000,
+	XGYRO_CTEN = 0b00100000
 } gyro_config_2_opts;
 
 /* BIT 	| NAME 					| DESC
@@ -298,7 +301,8 @@ static const reg_RW REG_ZG_OFFS_USRL = { "ZG_OFFS_USRL", 0x08, UBANK_2, 0 };
  * Reset Value: 0
  */
 static const reg_RW REG_ODR_ALIGN_EN = { "ODR_ALIGN_EN", 0x09, UBANK_2, 0b11111110 };
-typedef enum odr_align_opts {
+typedef enum odr_align_opts
+{
 	ODR_ALIGN_EN = 0b00000001
 } odr_align_opts;
 
@@ -323,20 +327,21 @@ static const reg_RW REG_ACCEL_SMPLRT_DIV_2 = { "ACCEL_SMPLRT_DIV_2", 0x11, UBANK
  * Reset Value: 0b00000001
  */
 static const reg_RW REG_ACCEL_CONFIG_1 = { "ACCEL_CONFIG_1", 0x14, UBANK_2, 0b11000000 };
-typedef enum accel_config_1_opts {
-	ACCEL_FCHOICE 		= 0b00000001,
+typedef enum accel_config_1_opts
+{
+	ACCEL_FCHOICE = 0b00000001,
 	// ACCEL_FS_SEL_2g by default
-	ACCEL_FS_SEL_4g 	= 0b00000010,
-	ACCEL_FS_SEL_8g 	= 0b00000100,
-	ACCEL_FS_SEL_16g 	= 0b00000110,
+	ACCEL_FS_SEL_4g = 0b00000010,
+	ACCEL_FS_SEL_8g = 0b00000100,
+	ACCEL_FS_SEL_16g = 0b00000110,
 	// ACCEL_DLPFCFG_0 by default
-	ACCEL_DLPFCFG_1 	= 0b00001000,
-	ACCEL_DLPFCFG_2 	= 0b00010000,
-	ACCEL_DLPFCFG_3 	= 0b00011000,
-	ACCEL_DLPFCFG_4		= 0b00100000,
-	ACCEL_DLPFCFG_5		= 0b00101000,
-	ACCEL_DLPFCFG_6		= 0b00110000,
-	ACCEL_DLPFCFG_7		= 0b00111000
+	ACCEL_DLPFCFG_1 = 0b00001000,
+	ACCEL_DLPFCFG_2 = 0b00010000,
+	ACCEL_DLPFCFG_3 = 0b00011000,
+	ACCEL_DLPFCFG_4 = 0b00100000,
+	ACCEL_DLPFCFG_5 = 0b00101000,
+	ACCEL_DLPFCFG_6 = 0b00110000,
+	ACCEL_DLPFCFG_7 = 0b00111000
 } accel_config_1_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -348,14 +353,15 @@ typedef enum accel_config_1_opts {
  * Reset Value: 0
  */
 static const reg_RW REG_ACCEL_CONFIG_2 = { "ACCEL_CONFIG_2", 0x15, UBANK_2, 0b11100000 };
-typedef enum accel_config_2_opts {
+typedef enum accel_config_2_opts
+{
 	// DEC3_CFG_1 or DEC3_CFG_4 by default (DS p65)
-	DEC3_CFG_8		= 0b00000001,
-	DEC3_CFG_16		= 0b00000010,
-	DEC3_CFG_32 	= 0b00000011,
-	AZ_ST_EN_REG 	= 0b00000100,
-	AY_ST_EN_REG 	= 0b00001000,
-	AX_ST_EN_REG 	= 0b00010000
+	DEC3_CFG_8 = 0b00000001,
+	DEC3_CFG_16 = 0b00000010,
+	DEC3_CFG_32 = 0b00000011,
+	AZ_ST_EN_REG = 0b00000100,
+	AY_ST_EN_REG = 0b00001000,
+	AX_ST_EN_REG = 0b00010000
 } accel_config_2_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -364,18 +370,18 @@ typedef enum accel_config_2_opts {
  * Reset Value: 0
  */
 static const reg_RW REG_TEMP_CONFIG = { "TEMP_CONFIG", 0x53, UBANK_2, 0 };
-typedef enum temp_config_opts {
+typedef enum temp_config_opts
+{
 	// TEMP_DLPFCFG_0 by default
-	TEMP_DLPFCFG_1 	= 0b00000001,
-	TEMP_DLPFCFG_2 	= 0b00000010,
-	TEMP_DLPFCFG_3 	= 0b00000011,
-	TEMP_DLPFCFG_4	= 0b00000100,
-	TEMP_DLPFCFG_5	= 0b00000101,
-	TEMP_DLPFCFG_6	= 0b00000110,
-	TEMP_DLPFCFG_7	= 0b00000111
+	TEMP_DLPFCFG_1 = 0b00000001,
+	TEMP_DLPFCFG_2 = 0b00000010,
+	TEMP_DLPFCFG_3 = 0b00000011,
+	TEMP_DLPFCFG_4 = 0b00000100,
+	TEMP_DLPFCFG_5 = 0b00000101,
+	TEMP_DLPFCFG_6 = 0b00000110,
+	TEMP_DLPFCFG_7 = 0b00000111
 } temp_config_opts;
 /* ICM20948 USER UBANK 2 REGISTERS END */
-
 
 /* ICM20948 USER UBANK 3 REGISTERS START */
 /* BIT 	| NAME 					| DESC
@@ -393,25 +399,26 @@ static const reg_RW REG_I2C_MST_ODR_CONFIG = { "I2C_MST_ODR_CONFIG", 0x00, UBANK
  * Reset Value: 0
  */
 static const reg_RW REG_I2C_MST_CTRL = { "I2C_MST_CTRL", 0x01, UBANK_3, 0b01100000 };
-typedef enum i2c_mst_ctrl_opts {
+typedef enum i2c_mst_ctrl_opts
+{
 	// I2C_MST_CLK_0 by default (DS p81)
 	// I2C_MST_CLK_1 is undefined
 	// I2C_MST_CLK_2 == I2C_MST_CLK_0
-	I2C_MST_CLK_3 	= 0b00000011,
-	I2C_MST_CLK_4 	= 0b00000100,
+	I2C_MST_CLK_3 = 0b00000011,
+	I2C_MST_CLK_4 = 0b00000100,
 	// I2C_MST_CLK_5 == I2C_MST_CLK_3
-	I2C_MST_CLK_6  	= 0b00000110,
-	I2C_MST_CLK_7  	= 0b00000111,
-	I2C_MST_CLK_8  	= 0b00001000,
+	I2C_MST_CLK_6 = 0b00000110,
+	I2C_MST_CLK_7 = 0b00000111,
+	I2C_MST_CLK_8 = 0b00001000,
 	// I2C_MST_CLK_9 == I2C_MST_CLK_3
-	I2C_MST_CLK_10  = 0b00001010,
+	I2C_MST_CLK_10 = 0b00001010,
 	// I2C_MST_CLK_11 == I2C_MST_CLK_10
-	I2C_MST_CLK_12  = 0b00001100,
+	I2C_MST_CLK_12 = 0b00001100,
 	// I2C_MST_CLK_13 == I2C_MST_CLK_3
 	// I2C_MST_CLK_14 == I2C_MST_CLK_7
 	// I2C_MST_CLK_15 == I2C_MST_CLK_7
-	I2C_MST_P_NSR 	= 0b00010000,
-	MULT_MST_EN 	= 0b10000000
+	I2C_MST_P_NSR = 0b00010000,
+	MULT_MST_EN = 0b10000000
 } i2c_mst_ctrl_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -420,7 +427,8 @@ typedef enum i2c_mst_ctrl_opts {
  * Reset Value: 0
  */
 static const reg_RW REG_I2C_SLV0_ADDR = { "I2C_SLV0_ADDR", 0x03, UBANK_3, 0 };
-typedef enum i2c_slv_addr_opts { // same value for all I2C_SLVX_ADDR
+typedef enum i2c_slv_addr_opts
+{ // same value for all I2C_SLVX_ADDR
 	I2C_SLV_RNW = 0b10000000
 } i2c_slv_addr_opts;
 
@@ -439,27 +447,28 @@ static const reg_RW REG_I2C_SLV0_REG = { "I2C_SLV0_REG", 0x04, UBANK_3, 0 };
  * Reset Value: 0
  */
 static const reg_RW REG_I2C_SLV0_CTRL = { "I2C_SLV0_CTRL", 0x05, UBANK_3, 0 };
-typedef enum i2c_slv_ctrl_opts { // same value for all I2C_SLVX_ADDR
-	// I2C_SLV_LENG_0 by default
-	I2C_SLV_LENG_1	 	= 0b00000001,
-	I2C_SLV_LENG_2 		= 0b00000010,
-	I2C_SLV_LENG_3 		= 0b00000011,
-	I2C_SLV_LENG_4 		= 0b00000100,
-	I2C_SLV_LENG_5 		= 0b00000101,
-	I2C_SLV_LENG_6 		= 0b00000110,
-	I2C_SLV_LENG_7 		= 0b00000111,
-	I2C_SLV_LENG_8 		= 0b00001000,
-	I2C_SLV_LENG_9 		= 0b00001001,
-	I2C_SLV_LENG_10 	= 0b00001010,
-	I2C_SLV_LENG_11 	= 0b00001011,
-	I2C_SLV_LENG_12 	= 0b00001100,
-	I2C_SLV_LENG_13 	= 0b00001101,
-	I2C_SLV_LENG_14 	= 0b00001110,
-	I2C_SLV_LENG_15 	= 0b00001111,
-	I2C_SLV_GRP 		= 0b00010000,
-	I2C_SLV_REG_DIS 	= 0b00100000,
-	I2C_SLV_BYTE_SW 	= 0b01000000,
-	I2C_SLV_EN 		= 0b10000000
+typedef enum i2c_slv_ctrl_opts
+{ // same value for all I2C_SLVX_ADDR
+// I2C_SLV_LENG_0 by default
+	I2C_SLV_LENG_1 = 0b00000001,
+	I2C_SLV_LENG_2 = 0b00000010,
+	I2C_SLV_LENG_3 = 0b00000011,
+	I2C_SLV_LENG_4 = 0b00000100,
+	I2C_SLV_LENG_5 = 0b00000101,
+	I2C_SLV_LENG_6 = 0b00000110,
+	I2C_SLV_LENG_7 = 0b00000111,
+	I2C_SLV_LENG_8 = 0b00001000,
+	I2C_SLV_LENG_9 = 0b00001001,
+	I2C_SLV_LENG_10 = 0b00001010,
+	I2C_SLV_LENG_11 = 0b00001011,
+	I2C_SLV_LENG_12 = 0b00001100,
+	I2C_SLV_LENG_13 = 0b00001101,
+	I2C_SLV_LENG_14 = 0b00001110,
+	I2C_SLV_LENG_15 = 0b00001111,
+	I2C_SLV_GRP = 0b00010000,
+	I2C_SLV_REG_DIS = 0b00100000,
+	I2C_SLV_BYTE_SW = 0b01000000,
+	I2C_SLV_EN = 0b10000000
 } i2c_slv_ctrl_opts;
 
 /* BIT 	| NAME 			| DESC
@@ -470,21 +479,21 @@ static const reg_RW REG_I2C_SLV0_DO = { "I2C_SLV0_DO", 0x06, UBANK_3, 0 };
 
 /* ICM20948 USER UBANK 3 REGISTERS END */
 
-
 /* SENSOR SUPPORT STRUCTS START */
-typedef struct int16_vector3 {
+typedef struct int16_vector3
+{
 	int16_t x;
 	int16_t y;
 	int16_t z;
 } int16_vector3;
 
-typedef struct float_vector3 {
+typedef struct float_vector3
+{
 	float x;
 	float y;
 	float z;
 } float_vector3;
 /* SENSOR SUPPORT STRUCTS END */
-
 
 /* DELAYS AND TIMEOUTS START */
 // Start-up time for register read/write from power-up or reset
@@ -501,33 +510,38 @@ static const uint32_t WAKE_DELAY = 45;
 static const uint32_t MAXIMUM_ICM_TIMEOUT = 20;
 /* DELAYS AND TIMEOUTS END */
 
-
 /* ICM20948 ENUMS START */
-typedef enum SDO_Pinouts {SDO_LOW, SDO_HIGH} SDO_Pinouts;
+typedef enum SDO_Pinouts
+{
+	SDO_LOW,
+	SDO_HIGH
+} SDO_Pinouts;
 /* ICM20948 ENUMS END */
 /* ICM20948 CONSTANTS END */
-
 
 /* AK09916 CONSTANTS START */
 static const uint8_t AK09916_ADDR_READ = 0x8C;
 static const uint8_t AK09916_ADDR_WRITE = 0x0C;
 static const uint8_t AK09916_WIA_VALUE = 0x09;
 
-typedef enum cntl2_modes {
-	POWER_DOWN 	   = 0,
+typedef enum cntl2_modes
+{
+	POWER_DOWN = 0,
 	SINGLE_MEASURE = 0b00000001,
 	CONT_MEASURE_1 = 0b00000010,
 	CONT_MEASURE_2 = 0b00000100,
 	CONT_MEASURE_3 = 0b00000110,
 	CONT_MEASURE_4 = 0b00001000,
-	SELF_TEST 	   = 0b00010000
+	SELF_TEST = 0b00010000
 } cntl2_modes;
 
-typedef enum cntl3_modes {
+typedef enum cntl3_modes
+{
 	SOFT_RESET = 0b000001
 } cntl3_modes;
 
-typedef enum AK09916_register {
+typedef enum AK09916_register
+{
 	WIA = 0x01,
 	ST1 = 0x10,
 	HXL = 0x11,
@@ -541,7 +555,6 @@ typedef enum AK09916_register {
 	CNTL3 = 0x32
 } AK09916_register;
 /* AK09916 CONSTANTS END */
-
 
 /* ICM20948 FUNCTIONS START */
 HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* hi2c, SDO_Pinouts pinout);
@@ -569,7 +582,7 @@ HAL_StatusTypeDef ICM20948_Wake();
 HAL_StatusTypeDef ICM20948_Sleep();
 HAL_StatusTypeDef ICM20948_Reset();
 
-HAL_StatusTypeDef AK09916_Init();
+HAL_StatusTypeDef AK09916_Init(cntl2_modes mode);
 HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, uint8_t size);
 HAL_StatusTypeDef AK09916_SetCNTL2(cntl2_modes mode);
 HAL_StatusTypeDef AK09916_Reset();

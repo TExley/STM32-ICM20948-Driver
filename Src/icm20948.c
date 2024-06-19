@@ -16,14 +16,12 @@ static I2C_HandleTypeDef* hi2c;
 static user_bank current_ubank;
 /* ICM20948 VARIABLES END */
 
-
 /* AK09916 VARIABLES START */
 static uint8_t AK09916_LAST_ADDR = 0;
 /* AK09916 VARIABLES END */
 
-
 /* ICM20948 FUNCTIONS START */
-HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* h_i2c, SDO_Pinouts  SDO_pinout)
+HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* h_i2c, SDO_Pinouts SDO_pinout)
 {
 	HAL_Delay(STARTUP_DELAY);
 
@@ -52,7 +50,7 @@ HAL_StatusTypeDef ICM20948_Init(I2C_HandleTypeDef* h_i2c, SDO_Pinouts  SDO_pinou
 
 HAL_StatusTypeDef ICM20948_ReadUserBank(uint8_t* data)
 {
-	return HAL_I2C_Mem_Read(hi2c, ICM20948_ADDR, REG_UBANK_SEL.address, I2C_MEMADD_SIZE_8BIT, data, 1, MAXIMUM_ICM_TIMEOUT);;
+	return HAL_I2C_Mem_Read(hi2c, ICM20948_ADDR, REG_UBANK_SEL.address, I2C_MEMADD_SIZE_8BIT, data, 1, MAXIMUM_ICM_TIMEOUT);
 }
 
 HAL_StatusTypeDef ICM20948_ChangeUserBank(user_bank ubank)
@@ -228,9 +226,7 @@ float_vector3 ICM20948_ScaleSensorVectors(int16_vector3* sensor_v, float scale_f
 
 HAL_StatusTypeDef ICM20948_MeasureGyroOffset(uint32_t ticks, int16_vector3* gyro_offset, uint32_t gyro_update_period_ms)
 {
-	int64_t gyro_sum_x = 0,
-			gyro_sum_y = 0,
-			gyro_sum_z = 0;
+	int64_t gyro_sum_x = 0, gyro_sum_y = 0, gyro_sum_z = 0;
 
 	for (uint32_t i = 0; i < ticks; i++)
 	{
@@ -281,7 +277,7 @@ HAL_StatusTypeDef ICM20948_WriteGyroOffsetRegisters(int16_vector3* gyro_offset)
 
 	status = ICM20948_WriteRegister(&REG_ZG_OFFS_USRL, (uint8_t) gyro_offset->z);
 	if (status != HAL_OK)
-			return status;
+		return status;
 
 	return HAL_OK;
 }
@@ -310,7 +306,7 @@ HAL_StatusTypeDef ICM20948_Reset()
 
 /* AK09916 FUNCTIONS START */
 
-HAL_StatusTypeDef AK09916_Init()
+HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 {
 	HAL_StatusTypeDef status;
 
@@ -332,6 +328,9 @@ HAL_StatusTypeDef AK09916_Init()
 	if (status != HAL_OK)
 		return status;
 
+	if (mode == POWER_DOWN || mode == SELF_TEST)
+		return AK09916_SetCNTL2(mode);
+
 	status = AK09916_SetCNTL2(SINGLE_MEASURE);
 	if (status != HAL_OK)
 		return status;
@@ -344,12 +343,14 @@ HAL_StatusTypeDef AK09916_Init()
 	else if (data != AK09916_WIA_VALUE)
 		return HAL_ERROR;
 
-	status = AK09916_SetCNTL2(CONT_MEASURE_4);
-	if (status != HAL_OK)
-		return status;
+	if (mode != SINGLE_MEASURE)
+	{
+		status = AK09916_SetCNTL2(mode);
+		if (status != HAL_OK)
+			return status;
+	}
 
 	uint8_t data_buff[I2C_SLV_LENG_8];
-
 	return AK09916_ReadRegisters(HXL, data_buff, I2C_SLV_LENG_8);
 }
 
@@ -376,7 +377,7 @@ HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, ui
 	if (status != HAL_OK)
 		return status;
 
-	 HAL_Delay(1);
+	HAL_Delay(1);
 
 	return ICM20948_ReadRegisters((reg_R*) &REG_EXT_SLV_SENS_DATA_00, data, size);
 }
