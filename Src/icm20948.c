@@ -341,6 +341,8 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	if (status != HAL_OK)
 		return status;
 
+	HAL_Delay(MAXIMUM_ICM_TIMEOUT);
+
 	uint8_t data;
 	status = ICM20948_ReadRegisters((reg_R*) &REG_EXT_SLV_SENS_DATA_00, &data, I2C_SLV_LENG_1);
 	if (status != HAL_OK)
@@ -378,8 +380,6 @@ HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t size)
 		return status;
 
 	status = ICM20948_WriteRegisterEnDisables(&REG_I2C_SLV0_CTRL, I2C_SLV_EN | size, I2C_SLV_LENG_15);
-
-	HAL_Delay(1);
 
 	return status;
 }
