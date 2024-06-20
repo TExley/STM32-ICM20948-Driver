@@ -335,9 +335,13 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	if (status != HAL_OK)
 		return status;
 
-	uint8_t data;
 
-	status = AK09916_ReadRegisters(WIA, &data, I2C_SLV_LENG_1);
+	status = AK09916_ReadRegisters(WIA, I2C_SLV_LENG_1);
+	if (status != HAL_OK)
+		return status;
+
+	uint8_t data;
+	status = ICM20948_ReadRegisters((reg_R*) &REG_EXT_SLV_SENS_DATA_00, &data, I2C_SLV_LENG_1);
 	if (status != HAL_OK)
 		return status;
 	else if (data != AK09916_WIA_VALUE)
@@ -350,11 +354,10 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 			return status;
 	}
 
-	uint8_t data_buff[I2C_SLV_LENG_8];
-	return AK09916_ReadRegisters(HXL, data_buff, I2C_SLV_LENG_8);
+	return AK09916_ReadRegisters(HXL, I2C_SLV_LENG_8);
 }
 
-HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, uint8_t size)
+HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t size)
 {
 	HAL_StatusTypeDef status;
 
@@ -374,12 +377,10 @@ HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, ui
 		return status;
 
 	status = ICM20948_WriteRegisterEnDisables(&REG_I2C_SLV0_CTRL, I2C_SLV_EN | size, I2C_SLV_LENG_15);
-	if (status != HAL_OK)
-		return status;
 
 	HAL_Delay(1);
 
-	return ICM20948_ReadRegisters((reg_R*) &REG_EXT_SLV_SENS_DATA_00, data, size);
+	return status;
 }
 
 // Unsafe local write function for the two valid AK09916 registers

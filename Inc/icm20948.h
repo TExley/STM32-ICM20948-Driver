@@ -583,7 +583,7 @@ HAL_StatusTypeDef ICM20948_Sleep();
 HAL_StatusTypeDef ICM20948_Reset();
 
 HAL_StatusTypeDef AK09916_Init(cntl2_modes mode);
-HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t* data, uint8_t size);
+HAL_StatusTypeDef AK09916_ReadRegisters(AK09916_register regi, uint8_t size);
 HAL_StatusTypeDef AK09916_SetCNTL2(cntl2_modes mode);
 HAL_StatusTypeDef AK09916_Reset();
 /* ICM20948 FUNCTIONS END */
