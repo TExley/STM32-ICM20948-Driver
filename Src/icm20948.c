@@ -320,7 +320,8 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	if (status != HAL_OK)
 		return status;
 
-	status = ICM20948_WriteRegisterEnables(&REG_I2C_MST_CTRL, I2C_MST_CLK_7);
+	status = ICM20948_WriteRegisterEnables(&REG_I2C_MST_CTRL, (mode == SINGLE_MEASURE)
+		? I2C_MST_P_NSR | I2C_MST_CLK_7 : I2C_MST_CLK_7);
 	if (status != HAL_OK)
 		return status;
 
