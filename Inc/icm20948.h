@@ -167,6 +167,9 @@ typedef enum int_enable_opts
 	REG_WOF_EN = 0b10000000
 } int_enable_opts;
 
+static const reg_R REG_DELAY_TIMEH = { "DELAY_TIMEH", 0x28, UBANK_0 };
+static const reg_R REG_DELAY_TIMEL = { "DELAY_TIMEL", 0x29, UBANK_0 };
+
 static const reg_R REG_ACCEL_XOUT_H = { "ACCEL_XOUT_H", 0x2D, UBANK_0 };
 static const reg_R REG_ACCEL_XOUT_L = { "ACCEL_XOUT_L", 0x2E, UBANK_0 };
 static const reg_R REG_ACCEL_YOUT_H = { "ACCEL_YOUT_H", 0x2F, UBANK_0 };
@@ -659,11 +662,7 @@ typedef enum i2c_slv4_ctrl_opts
  */
 static const reg_RW REG_I2C_SLV4_DO = { "I2C_SLV4_DO", 0x16, UBANK_3, 0 };
 
-/* BIT 	| NAME 			| DESC
- * 7:0 	| I2C_SLV4_DI	| data in when slave 4 is set to read
- * Reset Value: 0
- */
-static const reg_RW REG_I2C_SLV4_DI = { "I2C_SLV4_DI", 0x17, UBANK_3, 0 };
+static const reg_R REG_I2C_SLV4_DI = { "I2C_SLV4_DI", 0x17, UBANK_3 };
 /* ICM20948 USER UBANK 3 REGISTERS END */
 
 /* SENSOR SUPPORT STRUCTS START */
