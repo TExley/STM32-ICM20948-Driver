@@ -167,6 +167,9 @@ typedef enum int_enable_opts
 	REG_WOF_EN = 0b10000000
 } int_enable_opts;
 
+// Clears register on read
+static const reg_R REG_I2C_MST_STATUS = { "I2C_MST_STATUS", 0x17, UBANK_0 };
+
 static const reg_R REG_DELAY_TIMEH = { "DELAY_TIMEH", 0x28, UBANK_0 };
 static const reg_R REG_DELAY_TIMEL = { "DELAY_TIMEL", 0x29, UBANK_0 };
 
@@ -188,6 +191,7 @@ static const reg_R REG_TEMP_OUT_H = { "TEMP_OUT_H", 0x33, UBANK_0 };
 static const reg_R REG_TEMP_OUT_L = { "TEMP_OUT_L", 0x34, UBANK_0 };
 
 static const reg_R REG_EXT_SLV_SENS_DATA_00 = { "EXT_SLV_SENS_DATA_00", 0x3B, UBANK_0 };
+static const reg_R REG_EXT_SLV_SENS_DATA_08 = { "EXT_SLV_SENS_DATA_08", 0x43, UBANK_0 };
 
 /* BIT 	| NAME 			| DESC
  * 7:4 	| -				| reserved
@@ -598,6 +602,64 @@ static const reg_RW REG_I2C_SLV1_CTRL = { "I2C_SLV1_CTRL", 0x09, UBANK_3, 0 };
  * Reset Value: 0
  */
 static const reg_RW REG_I2C_SLV1_DO = { "I2C_SLV1_DO", 0x0A, UBANK_3, 0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7 	| I2C_SLV1_RNW	| 1/0 – Transfer is a read/write
+ * 6:0	| I2C_ID_1		| physical address of I2C slave 2
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_SLV2_ADDR = { "I2C_SLV2_ADDR", 0x0B, UBANK_3, 0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| I2C_SLV1_REG	| register address from where to begin data transfer
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_SLV2_REG = { "I2C_SLV2_REG", 0x0C, UBANK_3, 0 };
+
+/* BIT 	| NAME 				| DESC
+ * 7 	| I2C_SLV1_EN		| 1 reads data at the sample rate and stores it at the first available EXT_SENS_DATA register
+ * 6 	| I2C_SLV1_BYTE_SW	| 1 enables swapping bytes when reading both the low and high byte of a word (DS p70)
+ * 5 	| I2C_SLV1_REG_DIS	| 1 the transaction does not write a register value, it will only read data, or write data
+ * 4 	| I2C_SLV1_GRP		| sets wether groups of bytes swapped end in odd (0) or even (1) registers
+ * 3:0 	| I2C_SLV1_LENG		| number of bytes to be read from I2C slave 2
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_SLV2_CTRL = { "I2C_SLV2_CTRL", 0x0D, UBANK_3, 0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| I2C_SLV1_DO	| data out when slave 2 is set to write
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_SLV2_DO = { "I2C_SLV2_DO", 0x0E, UBANK_3, 0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7 	| I2C_SLV1_RNW	| 1/0 – Transfer is a read/write
+ * 6:0	| I2C_ID_1		| physical address of I2C slave 3
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_SLV3_ADDR = { "I2C_SLV3_ADDR", 0x0F, UBANK_3, 0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| I2C_SLV1_REG	| register address from where to begin data transfer
+ * Reset Value: 0
+ */
+static const reg_RW REG_I2C_SLV3_REG = { "I2C_SLV3_REG", 0x10, UBANK_3, 0 };
+
+/* BIT 	| NAME 				| DESC
+ * 7 	| I2C_SLV1_EN		| 1 reads data at the sample rate and stores it at the first available EXT_SENS_DATA register
+ * 6 	| I2C_SLV1_BYTE_SW	| 1 enables swapping bytes when reading both the low and high byte of a word (DS p70)
+ * 5 	| I2C_SLV1_REG_DIS	| 1 the transaction does not write a register value, it will only read data, or write data
+ * 4 	| I2C_SLV1_GRP		| sets wether groups of bytes swapped end in odd (0) or even (1) registers
+ * 3:0 	| I2C_SLV1_LENG		| number of bytes to be read from I2C slave 3
+ * Reset Value: 0
+ */
+static const reg_RW REG_I3C_SLV1_CTRL = { "I2C_SLV3_CTRL", 0x11, UBANK_3, 0 };
+
+/* BIT 	| NAME 			| DESC
+ * 7:0 	| I2C_SLV1_DO	| data out when slave 1 is set to write
+ * Reset Value: 0
+ */
+static const reg_RW REG_I3C_SLV1_DO = { "I2C_SLV3_DO", 0x12, UBANK_3, 0 };
 
 /* BIT 	| NAME 			| DESC
  * 7 	| I2C_SLV4_RNW	| 1/0 – Transfer is a read/write

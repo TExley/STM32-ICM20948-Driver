@@ -320,8 +320,8 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	if (status != HAL_OK)
 		return status;
 
-	status = ICM20948_WriteRegisterEnables(&REG_I2C_MST_CTRL, (mode == SINGLE_MEASURE)
-		? I2C_MST_P_NSR | I2C_MST_CLK_7 : I2C_MST_CLK_7);
+	status = ICM20948_WriteRegisterEnables(&REG_I2C_MST_CTRL,
+	    (mode == SINGLE_MEASURE) ? I2C_MST_P_NSR | I2C_MST_CLK_7 : I2C_MST_CLK_7);
 	if (status != HAL_OK)
 		return status;
 
@@ -335,7 +335,6 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	status = AK09916_SetCNTL2(SINGLE_MEASURE);
 	if (status != HAL_OK)
 		return status;
-
 
 	status = AK09916_ReadRegisters(WIA, I2C_SLV_LENG_1);
 	if (status != HAL_OK)
