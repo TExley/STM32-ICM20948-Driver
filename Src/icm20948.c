@@ -404,7 +404,7 @@ HAL_StatusTypeDef L_AK09916_WriteRegister(uint8_t regi, uint8_t data)
 	if (status != HAL_OK)
 		return status;
 
-	return ICM20948_WriteRegisterEnables(&REG_I2C_SLV0_CTRL, I2C_SLV_EN | I2C_SLV_LENG_1);
+	return ICM20948_WriteRegisterEnDisables(&REG_I2C_SLV0_CTRL, I2C_SLV_EN | I2C_SLV_LENG_1, I2C_SLV_LENG_15);
 }
 
 HAL_StatusTypeDef AK09916_SetCNTL2(cntl2_modes mode)
