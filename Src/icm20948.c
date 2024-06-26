@@ -332,10 +332,6 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	if (mode == POWER_DOWN || mode == SELF_TEST)
 		return AK09916_SetCNTL2(mode);
 
-	status = AK09916_SetCNTL2(SINGLE_MEASURE);
-	if (status != HAL_OK)
-		return status;
-
 	status = AK09916_ReadRegisters(WIA, I2C_SLV_LENG_1);
 	if (status != HAL_OK)
 		return status;
@@ -349,12 +345,11 @@ HAL_StatusTypeDef AK09916_Init(cntl2_modes mode)
 	else if (data != AK09916_WIA_VALUE)
 		return HAL_ERROR;
 
-	if (mode != SINGLE_MEASURE)
-	{
-		status = AK09916_SetCNTL2(mode);
-		if (status != HAL_OK)
-			return status;
-	}
+	status = AK09916_SetCNTL2(mode);
+	if (status != HAL_OK)
+		return status;
+
+	HAL_Delay(MAXIMUM_ICM_TIMEOUT);
 
 	return AK09916_ReadRegisters(HXL, I2C_SLV_LENG_8);
 }
